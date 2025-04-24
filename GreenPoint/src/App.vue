@@ -1,9 +1,10 @@
 <template>
   <div class="header">
-    <p>GreenPoint</p>
+    GreenPoint
   </div>
   <div class="chatbox">
     <div class="chatbox-description">
+      <!-- Chatbot description goes here -->
     </div>
   </div>
 </template>
