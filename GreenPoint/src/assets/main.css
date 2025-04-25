@@ -1,9 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Iceberg&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Iceberg&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 .header {
   width: 100%;
   padding: 15px 30px;
@@ -13,7 +16,12 @@
   justify-content: space-between;
   margin: 0px;
 }
+.h1 {
+  font-size: 35px;
+  color: #0A5E36;
+  text-align: center;
 
+}
 body{
   background-color: #FBF6E9;
   font-family: "Iceberg", sans-serif;
@@ -21,16 +29,59 @@ body{
   font-size: 25px;
   font-style: normal;
 }
-.chatbox{
-  padding: 10px;
-  height: 100px;
-  border-radius: 6px;
-  margin: 40px auto; 
+.chat{
+  padding: 15px;
+  height: 500px;
+  border-radius: 20px;
   width: 90%;
-  max-width: 500px; 
-  background: #E3F0AF; 
+  margin-left: auto;
+  margin-top: 80px;
+  margin-right: 90px;
+  max-width: 600px; 
+  display: flex;
+  flex-direction: column;
+  background: #E3F0AF;
+  align-items: center; 
   box-shadow: 10px 7px 40px -15px black ;
+  border: 1px solid #F0F7D5;
 }
-.chatbox-description{
-  padding: 10px;
+.text1{
+  font-size: 25px;
+  color: #118B50;
+  margin-top: 30px;
+  margin-left: -243px;
+}
+.chat-description {
+  background: white;
+  border: 1px solid #226E48;
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 130px;
+  padding: 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: left;
+  font-family: "Crimson Text", serif; 
+  resize: vertical; 
+  background-color: #FBF6E9;
+  overflow: auto;
+  resize: none;
+}
+.chat-description:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.analyze-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  background-color: #118B50; /* Green color */
+  margin-top: 10px; /* Add some space above the button */
 }
