@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="header">
-      GreenPoint
+    <header>
+      <img id="logo" src="/images/leaf.png">
+      
+      <h3 class="name">GreenPoint</h3>
+
       <div class="theme-button">
-            <img id="moon" src="./assets/Moon.png">
-        </div>  
-    </div>
+        <img id="moon" src="/images/Moon.png" alt="Moon">
+      </div>  
+    </header>
     <section>
         <div class="column">
             <h1 id="header-1">Are your crops good?</h1>
@@ -38,7 +41,7 @@
             <p class="reg-text">Location</p>
             <textarea 
               class="smaller-description" 
-              placeholder="Enter a plant"
+              placeholder="Enter a location"
               v-model="location"
               required
             ></textarea> 

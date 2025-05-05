@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 
-.header {
+header {
   width: 100%;
   padding: 15px 30px;
   background-color: #0A5E36;
@@ -16,12 +16,35 @@
   justify-content: space-between;
   margin: 0px;
 }
+
+.name {
+  margin: 5px;
+  margin-left: 10px;
+  font-size: 28px;
+}
+
 .h1 {
   font-size: 35px;
   color: #0A5E36;
   text-align: center;
 
 }
+
+.theme-button {
+  display: flex;
+  background-color: #FBF6E9;
+  border-radius: 50%;
+  position: absolute;
+  padding: 7px;
+  right: 35px;
+  align-items: center;
+  justify-content: center;
+}
+
+#moon, #logo {
+  height: 25px;
+}
+
 body{
   background-color: #FBF6E9;
   font-family: "Iceberg", sans-serif;
