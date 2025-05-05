@@ -1,10 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Iceberg&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Iceberg&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Iceberg&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+  font-family: 'Iceberg', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background: #17242A;
+  color: #226E48;
 }
 
 header {
@@ -15,70 +24,109 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 0px;
+  z-index: 5;
+}
+.name {
+  margin: 2px;
+  margin-left: 15px;
+  margin-right: 2500px;
+  font-size: 35px;
 }
 
-.name {
+#logo {
+  height: 40px;
+  margin: 32x;
+}
+
+h3 {
   margin: 5px;
   margin-left: 10px;
   font-size: 28px;
 }
 
-.h1 {
-  font-size: 35px;
-  color: #0A5E36;
-  text-align: center;
-
-}
-
 .theme-button {
   display: flex;
-  background-color: #FBF6E9;
+  background-color: white;
   border-radius: 50%;
   position: absolute;
   padding: 7px;
   right: 35px;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  border: none;
 }
 
-#moon, #logo {
+#moon {
   height: 25px;
 }
 
-body{
-  background-color: #FBF6E9;
-  font-family: "Iceberg", sans-serif;
-  font-weight: 400;
-  font-size: 25px;
-  font-style: normal; 
+section {
+  position: relative;
+  margin-top: 75px;
+  margin-left: 60px;
 }
+
+.column {
+  float: left;
+  width: 40%;
+  margin: 50px;
+  margin-right: 80px;
+}
+
+#header-1 {
+  font-size: 70px;
+  color: white;
+}
+
+#bottom-text {
+  margin-top: 30px;
+  margin-right:80px;
+  font-size: 25px;
+  color: #679436;
+}
+
 .chat {
-  padding: 15px 30px;
-  height: 450px;
-  border-radius: 30px;
-  width: 400px;
+  margin: 100px auto;
+  padding: 20px 30px;
+  width: 500px;
+  height: 500px;
+  border-radius: 20px;
+  background-color: rgba(227, 240, 175, 0.24); 
+  border: 1px solid #E3F0AF;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
-  background: #e3f0af20;
-  box-shadow: 10px 7px 40px -15px black ;
-  border: 1px solid #F0F7D5;
-  margin-right: 100px;
+  z-index: 2;
+  backdrop-filter: blur(8px); 
 }
+.big-text {
+  font-size: 38px;
+  color: #e7edf3;
+  text-align: center;
+}
+
+.reg-text {
+  font-size: 20px;
+  color: #e7edf3;
+  margin-top: 10px;
+}
+
 .chat-description, .smaller-description {
-  background: white;
-  border: 1px solid #226E48;
+  background-color: #F2F1EC;
+  color: #010905;
+  border: 1px solid #444;
   width: 100%;
   max-width: 500px;
   border-radius: 20px;
   font-size: 13px;
   margin-top: 10px;
   text-align: left;
-  font-family: "Crimson Text", serif; 
-  resize: vertical; 
-  background-color: #FBF6E9;
-  overflow: auto;
+  font-family: "Crimson Text", serif;
   resize: none;
+  overflow: auto;
 }
+
 .chat-description {
   padding: 15px;
   height: 100%;
@@ -89,141 +137,159 @@ body{
   padding: 5px 15px;
   height: 100%;
   max-height: 30px;
-  border-radius: 10px;
 }
 
-.chat-description:focus, .smaller-description:focus {
+.chat-description:focus,
+.smaller-description:focus {
   outline: none;
   box-shadow: none;
 }
-.text1{
-  font-size: 25px;
-  color: #118B50;
-  margin-top: 20px;
-  margin-left: -243px;
-}
-.chat-description {
-  background: white;
-  border: 1px solid #226E48;
-  width: 100%;
-  height: 100%;
-  max-width: 500px;
-  max-height: 130px;
-  padding: 15px;
-  color: #118B50;
-  border-radius: 20px;
-  font-size: 13px;
-  margin-top: 10px;
-  text-align: left;
-  font-family: "Crimson Text", serif; 
-  resize: vertical; 
-  background-color: #FBF6E9;
-  overflow: auto;
-  resize: none;
-}
-
-.chat-description:focus {
-  outline: none;
-  box-shadow: none;
-}
-
 .analyze-button {
   font-family: 'Iceberg', sans-serif;
-  height: 40px;
   padding: 10px 20px;
+  min-height: 40px;
   border: none;
   border-radius: 12px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   color: white;
-  background-color: #118B50; 
-  margin-top: 20px; 
-  z-index: 0;
-  
+  background-color: #0A5E36;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.analyze-button::before {
-  content: "";
-  background: linear-gradient(50deg, #c2eda3, #118B50, #0A5E36, #118B50, #c2eda3);
-  position: absolute;
-  background-size: 600%;
-  z-index: -1;
-  height: 45px;
-  width: 29%;
-  filter: blur(8px);
-  animation: glow 30s linear infinite;
-  transition: opacity .3s ease-in-out;
-  border-radius: 12px;
-  opacity: 0;
-}
-.analyze-button::after{
-  content: "";
-  position: absolute;
-  height: 40px;
-  width: 29%;
-  border-radius: 12px;
-  z-index: -1;
-}
-@keyframes glow {
-  0% {
-      background-position: 0 0;
-  }
-  50% {
-      background-position: 400% 0;
-  }
-  100% {
-      background-position: 0 0;
-  }
+  position: relative;
+  z-index: 1; 
+  overflow: hidden; 
 }
 
-.analyze-button:hover::before{
+.analyze-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  z-index: -1;
+  background: transparent;
+}
+
+.analyze-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(50deg, #194d33, #2d9d6e, #0e7a45, #2d9d6e, #194d33);
+  background-size: 600%;
+  filter: blur(8px);
+  animation: glow 30s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  z-index: -1;
+}
+
+.analyze-button:hover::before {
   opacity: 1;
 }
 
-.analyze-button:active::after{
+@keyframes glow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 400% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+
+.analyze-button:hover::before {
+  opacity: 1;
+}
+
+.analyze-button:active::after {
   background: transparent;
 }
-.theme-button {
-  display: flex;
+
+
+body:not(.dark) {
+  background: linear-gradient(60deg, #FBF6E9, #F1F8D5);
+  color: #333;
+}
+
+body:not(.dark) header {
+  background-color: #0A5E36;
+  color: #FBF6E9;
+}
+
+body:not(.dark) .theme-button {
   background-color: #FBF6E9;
-  border-radius: 50%;
-  position: absolute;
-  padding: 7px;
-  right: 35px;
-  align-items: center;
-  justify-content: center;
 }
-section {
-  position: relative;
-  margin-top: 75px;
-  margin-left: 60px;
-}
-.column {
-  float: left;
-  width: 40%;
-  margin: 50px;
-  margin-right: 80px;
-}
-#header-1 {
-  font-size: 55px;
+
+body:not(.dark) #header-1 {
   color: #0A5E36;
 }
 
-#bottom-text {
-  margin-top: 30px;
-  font-size: 25px;
-  color: #118B50;
-}
-.reg-text {
-  font-size: 20px;
-  color: #118B50;
-  margin-top: 10px;
-}
-.big-text {
-  font-size: 38px;
+body:not(.dark) .big-text {
   color: #0A5E36;
-  text-align: center;
+}
+
+body:not(.dark) .reg-text {
+  color: #118B50;
+}
+
+body:not(.dark) #bottom-text {
+  color: #118B50;
+}
+
+body:not(.dark) .chat {
+  background: #e3f0af20;
+  box-shadow: 10px 7px 40px -15px black;
+  border: 1px solid #F0F7D5;
+}
+
+body:not(.dark) .chat-description,
+body:not(.dark) .smaller-description {
+  background-color: #FBF6E9;
+  color: #333;
+  border-color: #226E48;
+}
+body:not(.dark) .analyze-button {
+  background-color: #0d6d3f;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+body:not(.dark) .analyze-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(50deg, #c2eda3, #118B50, #0A5E36, #118B50, #c2eda3);
+  background-size: 600%;
+  filter: blur(8px);
+  animation: glow 30s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  z-index: -1;
+}
+
+body:not(.dark) .analyze-button:hover::before {
+  opacity: 1;
+}
+
+html, body {
+  height: 100%;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrap {
+  flex: 1;
 }
