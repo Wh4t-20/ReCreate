@@ -42,18 +42,29 @@
         ></textarea>
 
         <p class="reg-text">Location</p>
-        <textarea
-          class="smaller-description"
-          placeholder="Enter a location"
-          v-model="location"
-          required
-        ></textarea>
-
+        <div class="location-input-container">
+          <textarea
+            class="smaller-description"
+            placeholder="Enter a location"
+            v-model="location"
+            @input="fetchLocationSuggestions"
+            required
+          ></textarea>
+          <ul v-if="suggestions.length > 0" class="suggestions-list">
+            <li 
+              v-for="suggestion in suggestions" 
+              :key="suggestion.id" 
+              @click="selectSuggestion(suggestion)"
+              class="suggestion-item"
+            >
+              {{ suggestion.place_name }}
+            </li>
+          </ul>
+        </div>
         <button @click="goToMap" class="analyze-button">Analyze</button>
       </div>
     </section>
   </div>
-  
 </template>
 
 <script>
@@ -66,6 +77,9 @@ export default {
       description: '',
       isDarkMode: false,
       audio: null,
+      // Added for suggestions
+      suggestions: [], 
+      debounceTimer: null 
     };
   },
   mounted() {
@@ -73,9 +87,14 @@ export default {
     if (darkMode === 'true') {
       document.body.classList.add('dark');
       this.isDarkMode = true;
-
     }
-    this.audio = new Audio('/bang.mp3');
+    // Ensure the audio file path is correct for your project structure
+    try {
+        this.audio = new Audio('/bang.mp3'); 
+    } catch (e) {
+        console.warn("Could not initialize audio:", e);
+        this.audio = null; // Set audio to null if initialization fails
+    }
   },
   methods: {
     toggleTheme() {
@@ -84,20 +103,70 @@ export default {
       localStorage.setItem('darkMode', this.isDarkMode);
 
       if (this.audio) {
-        this.audio.currentTime = 0; // rewind if already played
+        this.audio.currentTime = 0; 
         this.audio.play().catch((e) => {
           console.warn("Audio couldn't play:", e);
         });
       }
     },
 
+    // Method to fetch location suggestions
+    async fetchLocationSuggestions() {
+      clearTimeout(this.debounceTimer);
+
+      if (!this.location || this.location.trim().length < 3) {
+        this.suggestions = [];
+        return;
+      }
+
+      this.debounceTimer = setTimeout(async () => {
+        const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q'; 
+        const encodedLocation = encodeURIComponent(this.location);
+        
+        // Using Cebu City, Philippines as an example for proximity. 
+        // Format: longitude,latitude
+        const proximityCoords = '123.8854,10.3157'; // Cebu City
+        
+        let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}&autocomplete=true`;
+        if (proximityCoords) { 
+          url += `&proximity=${proximityCoords}`;
+        }
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (data.features && data.features.length > 0) {
+            this.suggestions = data.features;
+          } else {
+            this.suggestions = [];
+          }
+        } catch (error) {
+          console.error('Autocomplete error:', error);
+          this.suggestions = [];
+        }
+      }, 300); // Debounce delay 300ms
+    },
+
+    // Method to handle selection of a suggestion
+    selectSuggestion(suggestion) {
+      this.location = suggestion.place_name; 
+      this.suggestions = []; // Clear suggestions after selection
+    },
+
     async goToMap() {
-  if (this.audio) {
-    this.audio.currentTime = 0;
-    this.audio.play().catch((e) => {
-      console.warn("Audio couldn't play:", e);
-    });
-  }
+      if (this.audio) {
+        this.audio.currentTime = 0;
+        this.audio.play().catch((e) => {
+          console.warn("Audio couldn't play:", e);
+        });
+      }
+      
+      if (!this.location.trim()) {
+        alert('Please enter a valid location.');
+        return;
+      }
+
       const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q';
       const encodedLocation = encodeURIComponent(this.location);
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}`;
@@ -120,7 +189,7 @@ export default {
             }
           });
         } else {
-          alert('Location not found. Try something more specific.');
+          alert('Location not found. Try something more specific or select from suggestions.');
         }
       } catch (error) {
         console.error('Geocoding error:', error);
@@ -130,3 +199,4 @@ export default {
   }
 };
 </script>
+

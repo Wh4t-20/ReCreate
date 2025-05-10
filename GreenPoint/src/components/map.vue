@@ -1,13 +1,13 @@
 <template>
 <div>
-    <div class=" header">
+    <div class="header">
         GreenPoint
     </div>
     <div id="map" style="width: 100%; height: 100vh;">
-
     </div>
 </div>
 </template>
+
 <script>
 import mapboxgl from 'mapbox-gl';
 import axios from 'axios';
