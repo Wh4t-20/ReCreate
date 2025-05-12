@@ -14,8 +14,18 @@
     
     <div id="map-container" style="flex-grow: 1; position: relative; width: 100%;"> 
         <div id="map" style="width: 100%; height: 100%;"></div>
+        
+      <!-- This is just a placeholder for the coordinates display -->
+
+        <div v-if="clickedLngLat" style="position: absolute; bottom: 70px; left: 10px; background-color: white; padding: 5px; border: 1px solid black; z-index: 1000;">
+            <div>Clicked Location Coordinates:</div>
+            <div>
+                Lat: {{ clickedLngLat.lat.toFixed(4) }}, Lng: {{ clickedLngLat.lng.toFixed(4) }}
+            </div>
+        </div>
     </div>
-</div>
+
+  </div>
 </template>
 
 <script>
@@ -29,6 +39,7 @@ export default {
       map: null,
       isDarkMode: false,
       audio: null,
+      clickedLngLat: null, // ADDED: To store clicked coordinates {lng, lat}
     };
   },
   async mounted() {
@@ -73,7 +84,6 @@ export default {
         this.initializeMap([123.8854, 10.3157], 'Cebu City (Default)', 10);
       }
     }
-    // Removed call to adjustMapContainerHeight as CSS flexbox handles it
   },
   methods: {
     toggleTheme() {
@@ -102,9 +112,13 @@ export default {
         .setLngLat(centerCoordinates)
         .setPopup(new mapboxgl.Popup().setText(`Location: ${locationName}`))
         .addTo(this.map);
-    },
 
-    // adjustMapContainerHeight method is removed
+      // ADDED: Map click listener
+      this.map.on('click', (e) => {
+        this.clickedLngLat = e.lngLat; // e.lngLat is an object {lng: number, lat: number}
+        // console.log('Clicked coordinates:', this.clickedLngLat); // For debugging
+      });
+    },
   },
   beforeUnmount() {
     if (this.map) {
@@ -114,4 +128,3 @@ export default {
   }
 };
 </script>
-
