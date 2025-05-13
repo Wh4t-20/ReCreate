@@ -14,55 +14,12 @@
 
     <section>
       <div class="column">
-        <h1 id="header-1">Are your crops good?</h1>
+        <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
         <p id="bottom-text">
-          Check if your land is suitable for growing a certain crop. 
-        </p>
-        <p id="bottom-text">
-          You'll get an in-depth analysis of the land with optimization options.
+          Analyze your land’s potential and discover the best crop choices with optimization options. 
         </p>
       </div>
-
-      <div class="chat">
-        <p class="big-text">GreenPoint</p>
-        <p class="reg-text">What ails you yung blud?</p>
-        <textarea
-          class="chat-description"
-          placeholder="Describe your plans"
-          v-model="description"
-          required
-        ></textarea>
-
-        <p class="reg-text">Plant</p>
-        <textarea
-          class="smaller-description"
-          placeholder="Enter a plant"
-          v-model="plant"
-          required
-        ></textarea>
-
-        <p class="reg-text">Location</p>
-        <div class="location-input-container">
-          <textarea
-            class="smaller-description"
-            placeholder="Enter a location"
-            v-model="location"
-            @input="fetchLocationSuggestions"
-            required
-          ></textarea>
-          <ul v-if="suggestions.length > 0" class="suggestions-list">
-            <li 
-              v-for="suggestion in suggestions" 
-              :key="suggestion.id" 
-              @click="selectSuggestion(suggestion)"
-              class="suggestion-item"
-            >
-              {{ suggestion.place_name }}
-            </li>
-          </ul>
-        </div>
-        <button @click="goToMap" class="analyze-button">Analyze</button>
-      </div>
+        <button class="getstarted">Get started</button>
     </section>
   </div>
 </template>
