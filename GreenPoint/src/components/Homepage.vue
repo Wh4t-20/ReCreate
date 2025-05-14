@@ -13,14 +13,38 @@
     </header>
 
     <section>
-      <div class="column">
-        <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
-        <p id="bottom-text">
-          Analyze your land’s potential and discover the best crop choices with optimization options. 
-        </p>
-      </div>
-        <button class="getstarted">Get started</button>
-    </section>
+  <div class="column">
+    <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
+    <p id="bottom-text">
+      Analyze your land’s potential and discover the best crop choices with optimization options.
+    </p>
+      <button class="getstarted">Get started</button>
+    <div>
+      <textarea
+        class="smaller-description"
+        placeholder="Enter a location"
+        v-model="location"
+        @input="fetchLocationSuggestions"
+        required
+      ></textarea>
+
+      <ul v-if="suggestions.length > 0" class="suggestions-list">
+        <li 
+          v-for="suggestion in suggestions" 
+          :key="suggestion.id" 
+          @click="selectSuggestion(suggestion)"
+          class="suggestion-item"
+        >
+          {{ suggestion.place_name }}
+        </li>
+      </ul>
+    </div>
+
+    <button @click="goToMap" class="analyze-button">Analyze</button>
+  </div>
+
+</section>
+
   </div>
 </template>
 
@@ -29,9 +53,7 @@ export default {
   name: 'HomePage',
   data() {
     return {
-      plant: '',
       location: '',
-      description: '',
       isDarkMode: false,
       audio: null,
       // Added for suggestions

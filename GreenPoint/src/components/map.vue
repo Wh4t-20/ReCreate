@@ -24,6 +24,9 @@
             </div>
         </div>
     </div>
+    <router-link to="/analyze">
+      <button class="getstarted">test</button>
+    </router-link>
 
   </div>
 </template>
@@ -33,7 +36,7 @@ import mapboxgl from 'mapbox-gl';
 import axios from 'axios';
 
 export default {
-  name: 'MapView',
+  name: 'MapPage',
   data() {
     return {
       map: null,

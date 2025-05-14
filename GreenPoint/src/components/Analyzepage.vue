@@ -12,23 +12,12 @@
         </button>
       </header>
   
-      <section>
-        <div class="column">
-          <h1 id="header-1">Are your crops good?</h1>
-          <p id="bottom-text">
-            Check if your land is suitable for growing a certain crop. 
-          </p>
-          <p id="bottom-text">
-            You'll get an in-depth analysis of the land with optimization options.
-          </p>
-        </div>
-  
         <div class="chat">
           <p class="big-text">GreenPoint</p>
-          <p class="reg-text">What ails you yung blud?</p>
+          <p class="reg-text">Plan</p>
           <textarea
             class="chat-description"
-            placeholder="Describe your plans"
+            placeholder="Describe your plans as precise as possible"
             v-model="description"
             required
           ></textarea>
@@ -41,39 +30,17 @@
             required
           ></textarea>
   
-          <p class="reg-text">Location</p>
-          <div class="location-input-container">
-            <textarea
-              class="smaller-description"
-              placeholder="Enter a location"
-              v-model="location"
-              @input="fetchLocationSuggestions"
-              required
-            ></textarea>
-            <ul v-if="suggestions.length > 0" class="suggestions-list">
-              <li 
-                v-for="suggestion in suggestions" 
-                :key="suggestion.id" 
-                @click="selectSuggestion(suggestion)"
-                class="suggestion-item"
-              >
-                {{ suggestion.place_name }}
-              </li>
-            </ul>
-          </div>
-          <button @click="goToMap" class="analyze-button">Analyze</button>
+          <button class="analyze-button">no fucntion pa</button>
         </div>
-      </section>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'HomePage',
+    name: 'Analyzepage',
     data() {
       return {
         plant: '',
-        location: '',
         description: '',
         isDarkMode: false,
         audio: null,
@@ -110,92 +77,7 @@
         }
       },
   
-      // Method to fetch location suggestions
-      async fetchLocationSuggestions() {
-        clearTimeout(this.debounceTimer);
-  
-        if (!this.location || this.location.trim().length < 3) {
-          this.suggestions = [];
-          return;
-        }
-  
-        this.debounceTimer = setTimeout(async () => {
-          const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q'; 
-          const encodedLocation = encodeURIComponent(this.location);
-          
-          // Using Cebu City, Philippines as an example for proximity. 
-          // Format: longitude,latitude
-          const proximityCoords = '123.8854,10.3157'; // Cebu City
-          
-          let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}&autocomplete=true`;
-          if (proximityCoords) { 
-            url += `&proximity=${proximityCoords}`;
-          }
-  
-          try {
-            const res = await fetch(url);
-            const data = await res.json();
-  
-            if (data.features && data.features.length > 0) {
-              this.suggestions = data.features;
-            } else {
-              this.suggestions = [];
-            }
-          } catch (error) {
-            console.error('Autocomplete error:', error);
-            this.suggestions = [];
-          }
-        }, 300); // Debounce delay 300ms
-      },
-  
-      // Method to handle selection of a suggestion
-      selectSuggestion(suggestion) {
-        this.location = suggestion.place_name; 
-        this.suggestions = []; // Clear suggestions after selection
-      },
-  
-      async goToMap() {
-        if (this.audio) {
-          this.audio.currentTime = 0;
-          this.audio.play().catch((e) => {
-            console.warn("Audio couldn't play:", e);
-          });
-        }
-        
-        if (!this.location.trim()) {
-          alert('Please enter a valid location.');
-          return;
-        }
-  
-        const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q';
-        const encodedLocation = encodeURIComponent(this.location);
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}`;
-  
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
-  
-          if (data.features && data.features.length > 0) {
-            const [lon, lat] = data.features[0].center;
-  
-            this.$router.push({
-              path: '/map',
-              query: {
-                lat,
-                lon,
-                plant: this.plant,
-                location: this.location,
-                description: this.description
-              }
-            });
-          } else {
-            alert('Location not found. Try something more specific or select from suggestions.');
-          }
-        } catch (error) {
-          console.error('Geocoding error:', error);
-          alert('Failed to geocode location.');
-        }
-      }
+      
     }
   };
   </script>
