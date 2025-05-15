@@ -12,14 +12,16 @@
       </button>
     </header>
 
-    <section>
-  <div class="column">
-    <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
-    <p id="bottom-text">
-      Analyze your land’s potential and discover the best crop choices with optimization options.
-    </p>
-      <button class="getstarted">Get started</button>
-    <div>
+  <section class = "title">
+    <div class="column">
+      <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
+      <p id="bottom-text">
+        Analyze your land’s potential and discover the best crop choices with optimization options.
+      </p>
+    </div>
+  </section>
+
+    <div class = "chat">
       <textarea
         class="smaller-description"
         placeholder="Enter a location"
@@ -39,13 +41,11 @@
         </li>
       </ul>
     </div>
-
-    <button @click="goToMap" class="analyze-button">Analyze</button>
+    <div class = "button-wrapper">
+      <button @click="goToMap" class="analyze-button">Analyze</button>
+    </div>
   </div>
 
-</section>
-
-  </div>
 </template>
 
 <script>

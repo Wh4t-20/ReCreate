@@ -24,7 +24,7 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 0px;
-  z-index: 5;
+  z-index: 10;
 }
 .name {
   margin: 2px;
@@ -64,25 +64,23 @@ h3 {
 section {
   position: relative;
   margin-top: 75px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Optional: centers vertically inside a fixed height */
-  text-align: center;
+  margin-left: 100px;
+  display: block;
+  text-align: left;
 }
 
 
 .column {
-  float: none;
-  width: 40%;
-  margin: 50px auto;
+  float: left;
+  width: 30%;
+  margin: 50px auto auto 10px; /*top right bottom lefft*/
+
 }
 
 #header-1 {
   font-size: 70px;
   color: white;
+ 
 }
 
 #bottom-text {
@@ -116,58 +114,73 @@ section {
   align-items: center;
 }
 
-.chat {
-  margin: 100px auto;
-  padding: 20px 30px;
-  width: 400px;
-  height: 400px;
+.chat { 
+  position: absolute;
+  top: 70px;
+  right: 150px;
+  padding: 20px 20px;
+  width: 600px;
+  height: 80px;
   border-radius: 20px;
   background-color: rgba(227, 240, 175, 0.24); 
   border: 1px solid #E3F0AF;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   z-index: 2;
   backdrop-filter: blur(8px); 
-}
-.big-text {
-  font-size: 38px;
-  color: #e7edf3;
-  text-align: center;
-}
-
-.reg-text {
-  font-size: 20px;
-  color: #e7edf3;
-  margin-top: 10px;
+  align-items: flex-end;
+  text-align: right;
+  margin-top: 100px;
+  margin-bottom: 20px;
 }
 
-.chat-description, .smaller-description {
+
+.big-text, .reg-text {
+  text-align: left;
+  width: 100%;
+}
+
+.smaller-description {
   background-color: #F2F1EC;
   color: #010905;
   border: 1px solid #444;
   width: 100%;
-  max-width: 500px;
-  border-radius: 20px;
+  max-width: 600px;
+  border-radius: 10px 10px 10px 10px; /*top-left top-right b-r b-l*/
   font-size: 13px;
-  margin-top: 10px;
+  margin: 3px 0 3px 0; 
   text-align: left;
   font-family: "Crimson Text", serif;
   resize: none;
   overflow: auto;
+  outline: none;
+  box-shadow: none;
+  padding-top: 5px;
+  padding-left: 5px;
 }
 
 .chat-description {
   padding: 15px;
   height: 100%;
   max-height: 150px;
+  background-color: #F2F1EC;
+  color: #010905;
+  border: 1px solid #444;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 0.5px;
+  margin-bottom: 0.5px;
+  text-align: left;
+  font-family: "Crimson Text", serif;
+  resize: none;
+  overflow: auto;
+  outline: none;
+  box-shadow: none;
 }
 
-.smaller-description {
-  padding: 5px 15px;
-  height: 100%;
-  max-height: 30px;
-}
 
 .chat-description:focus,
 .smaller-description:focus {
@@ -177,7 +190,7 @@ section {
 .analyze-button {
   font-family: 'Iceberg', sans-serif;
   padding: 10px 20px;
-  min-height: 40px;
+  width: 100px;
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -185,14 +198,30 @@ section {
   transition: background-color 0.3s ease;
   color: white;
   background-color: #0A5E36;
-  margin-top: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 1; 
-  overflow: hidden; 
+  flex-direction: column;
+  justify-content: right;
+  align-items: right;
+
+  /* Styling */
+  z-index: 1;
+  overflow: hidden;
+  text-align: center;
+
+  /* Adjust spacing as needed, avoid fixed large top margin */
+  margin-top: 250px;
+  margin-right: 0; /* Only needed if part of a flex container */
 }
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 150px 0 0; /* adjust right padding if needed */
+  margin-top: 50px; /* adjust vertical spacing if needed */
+}
+
+
+
+
 
 .analyze-button::after {
   content: "";
@@ -328,24 +357,27 @@ html, body {
 .location-input-container {
   position: relative;
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .suggestions-list {
   position: absolute;
-  top: 100%; 
+  top: 60%; 
   left: 0; 
-  width: 100%; 
+  width: 93.3%; 
   background-color: #FBF6E9; 
   border: 1px solid #226E48;
-  border-top: none; 
-  border-radius: 0 0 10px 10px; 
+  border-top: 1px solid rgb(196, 196, 196); 
+  border-radius: 0px 0px 10px 10px; /*top-left top-right b-r b-l*/
   list-style-type: none;
   padding: 0;
-  margin: 0; 
   box-sizing: border-box; 
-  z-index: 1000; 
-  max-height: 120px; /* Approx. 5 items */
+  z-index: 10002; 
+  max-height: 110px; /* Approx. 5 items */
   overflow-y: auto;
+  margin-left: 20px; 
+  margin-right: 20px;
 }
 
 .dark .suggestions-list {
@@ -384,4 +416,52 @@ html, body {
 .dark .suggestion-item:hover {
   background-color: #4a4a4a; 
   color: #ffffff;
+}
+
+@media screen and (max-width: 768px) {
+
+  .column {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chat {
+    position: static; /* Remove absolute positioning */
+    margin-top: 40px; /* Add spacing */
+    width: 90%;
+    height: 90%;
+    padding: 15px 15px;
+  }
+  #header-1 {
+    font-size: 50px;
+  }
+  
+  .smaller-description {
+    height: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 18px;
+    resize: none;
+    font-family: "Crimson Text", serif;
+    font-size: 13px;
+  }
+
+  .suggestions-list{
+    max-width: 90.7%;
+    margin-left: 15px;
+  }
+  .getstarted {
+    width: 90%;
+    height: 60px;
+    font-size: 16px;
+    top: auto;
+    bottom: 30px;
+  }
+
+  .analyze-button {
+    right: 5%;
+    margin-left: auto;
+    margin-right: 0;
+  }
 }

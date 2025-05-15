@@ -12,11 +12,11 @@
         </button>
       </header>
   
-        <div class="chat">
+        <div class="chat1">
           <p class="big-text">GreenPoint</p>
           <p class="reg-text">Plan</p>
           <textarea
-            class="chat-description"
+            class="chat-description1"
             placeholder="Describe your plans as precise as possible"
             v-model="description"
             required
@@ -24,7 +24,7 @@
   
           <p class="reg-text">Plant</p>
           <textarea
-            class="smaller-description"
+            class="smaller-description1"
             placeholder="Enter a plant"
             v-model="plant"
             required
