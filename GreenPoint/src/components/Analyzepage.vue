@@ -12,7 +12,7 @@
         </button>
       </header>
   
-        <div class="chat">
+        <div class="placeholder">
           <p class="big-text">GreenPoint</p>
           <p class="reg-text">Plan</p>
           <textarea
@@ -30,7 +30,7 @@
             required
           ></textarea>
   
-          <button class="analyze-button">no fucntion pa</button>
+          <button class="analyze-button" @click="getValue">no fucntion pa</button>
         </div>
     </div>
   </template>
@@ -75,7 +75,16 @@
           });
         }
       },
-  
+      //get value of plan and plant
+      getValue() {
+        if(!this.description || !this.plant) {
+          alert("Please fill in the fields.");
+          return;
+
+        }
+        alert(`Plan: ${this.description} \nPlant: ${this.plant}`);
+      },
+      
       
     }
   };

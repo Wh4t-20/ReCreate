@@ -13,14 +13,15 @@
     </header>
 
     <section>
-  <div class="column">
-    <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
-    <p id="bottom-text">
-      Analyze your land’s potential and discover the best crop choices with optimization options.
-    </p>
-      <button class="getstarted">Get started</button>
-    <div>
-      <textarea
+    <div class="column">
+      <h1 id="header-1">Smarter Decisions, Greener Futures</h1>
+      <p id="bottom-text">
+        Analyze your land’s potential and discover the best crop choices with optimization options.
+      </p>
+    </div>
+    <div class="chat" >
+      <div class="location-input-container">
+        <textarea
         class="smaller-description"
         placeholder="Enter a location"
         v-model="location"
@@ -38,14 +39,17 @@
           {{ suggestion.place_name }}
         </li>
       </ul>
+      </div>
+      <button @click="goToMap" class="analyze-button">Analyze</button>
+
     </div>
 
-    <button @click="goToMap" class="analyze-button">Analyze</button>
-  </div>
-
-</section>
+    </section>
 
   </div>
+
+
+
 </template>
 
 <script>

@@ -56,6 +56,20 @@ h3 {
   cursor: pointer;
   border: none;
 }
+.placeholder {
+  margin: 100px auto;
+  padding: 20px 30px;
+  width: 400px;
+  height: 400px;
+  border-radius: 20px;
+  background-color: rgba(227, 240, 175, 0.24); 
+  border: 1px solid #E3F0AF;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  backdrop-filter: blur(8px); 
+}
 
 #moon {
   height: 25px;
@@ -63,21 +77,18 @@ h3 {
 
 section {
   position: relative;
+  margin-left: 60px;
   margin-top: 75px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Optional: centers vertically inside a fixed height */
-  text-align: center;
+  
 }
 
 
 .column {
-  float: none;
+  float: left;
   width: 40%;
   margin: 50px auto;
+  margin: 50px;
+  margin-right: 80px;
 }
 
 #header-1 {
@@ -119,16 +130,10 @@ section {
 .chat {
   margin: 100px auto;
   padding: 20px 30px;
-  width: 400px;
-  height: 400px;
-  border-radius: 20px;
-  background-color: rgba(227, 240, 175, 0.24); 
-  border: 1px solid #E3F0AF;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  width: 500px;
   display: flex;
   flex-direction: column;
   z-index: 2;
-  backdrop-filter: blur(8px); 
 }
 .big-text {
   font-size: 38px;
@@ -166,7 +171,7 @@ section {
 .smaller-description {
   padding: 5px 15px;
   height: 100%;
-  max-height: 30px;
+  max-height: 50px;
 }
 
 .chat-description:focus,
@@ -272,13 +277,13 @@ body:not(.dark) .reg-text {
 body:not(.dark) #bottom-text {
   color: #118B50;
 }
-
+/*
 body:not(.dark) .chat {
   background: #e3f0af20;
   box-shadow: 10px 7px 40px -15px black;
   border: 1px solid #F0F7D5;
 }
-
+*/
 body:not(.dark) .chat-description,
 body:not(.dark) .smaller-description {
   background-color: #FBF6E9;
@@ -338,7 +343,6 @@ html, body {
   background-color: #FBF6E9; 
   border: 1px solid #226E48;
   border-top: none; 
-  border-radius: 0 0 10px 10px; 
   list-style-type: none;
   padding: 0;
   margin: 0; 
