@@ -47,9 +47,6 @@
     </section>
 
   </div>
-
-
-
 </template>
 
 <script>

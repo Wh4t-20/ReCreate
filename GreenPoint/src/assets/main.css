@@ -24,7 +24,7 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 0px;
-  z-index: 5;
+  z-index: 10;
 }
 .name {
   margin: 2px;
@@ -94,6 +94,7 @@ section {
 #header-1 {
   font-size: 70px;
   color: white;
+ 
 }
 
 #bottom-text {
@@ -132,7 +133,7 @@ section {
   padding: 20px 30px;
   width: 500px;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   z-index: 2;
 }
 .big-text {
@@ -147,19 +148,29 @@ section {
   margin-top: 10px;
 }
 
-.chat-description, .smaller-description {
+
+.big-text, .reg-text {
+  text-align: left;
+  width: 100%;
+}
+
+.smaller-description {
   background-color: #F2F1EC;
   color: #010905;
   border: 1px solid #444;
   width: 100%;
-  max-width: 500px;
-  border-radius: 20px;
+  max-width: 600px;
+  border-radius: 10px 10px 10px 10px; /*top-left top-right b-r b-l*/
   font-size: 13px;
-  margin-top: 10px;
+  margin: 3px 0 3px 0; 
   text-align: left;
   font-family: "Crimson Text", serif;
   resize: none;
   overflow: auto;
+  outline: none;
+  box-shadow: none;
+  padding-top: 5px;
+  padding-left: 5px;
 }
 
 .chat-description {
@@ -182,7 +193,7 @@ section {
 .analyze-button {
   font-family: 'Iceberg', sans-serif;
   padding: 10px 20px;
-  min-height: 40px;
+  width: 100px;
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -190,14 +201,30 @@ section {
   transition: background-color 0.3s ease;
   color: white;
   background-color: #0A5E36;
-  margin-top: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 1; 
-  overflow: hidden; 
+  flex-direction: column;
+  justify-content: right;
+  align-items: right;
+
+  /* Styling */
+  z-index: 1;
+  overflow: hidden;
+  text-align: center;
+
+  /* Adjust spacing as needed, avoid fixed large top margin */
+  margin-top: 250px;
+  margin-right: 0; /* Only needed if part of a flex container */
 }
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 150px 0 0; /* adjust right padding if needed */
+  margin-top: 50px; /* adjust vertical spacing if needed */
+}
+
+
+
+
 
 .analyze-button::after {
   content: "";
@@ -333,23 +360,26 @@ html, body {
 .location-input-container {
   position: relative;
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .suggestions-list {
   position: absolute;
-  top: 100%; 
+  top: 60%; 
   left: 0; 
-  width: 100%; 
+  width: 93.3%; 
   background-color: #FBF6E9; 
   border: 1px solid #226E48;
   border-top: none; 
   list-style-type: none;
   padding: 0;
-  margin: 0; 
   box-sizing: border-box; 
-  z-index: 1000; 
-  max-height: 120px; /* Approx. 5 items */
+  z-index: 10002; 
+  max-height: 110px; /* Approx. 5 items */
   overflow-y: auto;
+  margin-left: 20px; 
+  margin-right: 20px;
 }
 
 .dark .suggestions-list {
@@ -388,4 +418,52 @@ html, body {
 .dark .suggestion-item:hover {
   background-color: #4a4a4a; 
   color: #ffffff;
+}
+
+@media screen and (max-width: 768px) {
+
+  .column {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chat {
+    position: static; /* Remove absolute positioning */
+    margin-top: 40px; /* Add spacing */
+    width: 90%;
+    height: 90%;
+    padding: 15px 15px;
+  }
+  #header-1 {
+    font-size: 50px;
+  }
+  
+  .smaller-description {
+    height: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 18px;
+    resize: none;
+    font-family: "Crimson Text", serif;
+    font-size: 13px;
+  }
+
+  .suggestions-list{
+    max-width: 90.7%;
+    margin-left: 15px;
+  }
+  .getstarted {
+    width: 90%;
+    height: 60px;
+    font-size: 16px;
+    top: auto;
+    bottom: 30px;
+  }
+
+  .analyze-button {
+    right: 5%;
+    margin-left: auto;
+    margin-right: 0;
+  }
 }
