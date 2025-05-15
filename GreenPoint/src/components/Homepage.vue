@@ -19,6 +19,7 @@
         Analyze your land’s potential and discover the best crop choices with optimization options.
       </p>
     </div>
+    </section>
     <div class="chat" >
       <div class="location-input-container">
         <textarea
@@ -44,7 +45,7 @@
 
     </div>
 
-    </section>
+   
 
   </div>
 </template>

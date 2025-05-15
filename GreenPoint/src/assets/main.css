@@ -23,8 +23,10 @@ header {
   color: white;
   display: flex;
   justify-content: space-between;
-  margin: 0px;
+  margin: 0;
   z-index: 5;
+  position:fixed;
+  top: 0;
 }
 .name {
   margin: 2px;
@@ -86,9 +88,9 @@ section {
 .column {
   float: left;
   width: 40%;
-  margin: 50px auto;
-  margin: 50px;
-  margin-right: 80px;
+  margin: 50px 80px auto 50px;
+
+  
 }
 
 #header-1 {
@@ -128,12 +130,19 @@ section {
 }
 
 .chat {
-  margin: 100px auto;
-  padding: 20px 30px;
+  margin: 150px auto;
+  padding: 5px 10px 25px 10px;
   width: 500px;
+  height: 80px;
+  border-radius: 20px;
+  background-color: rgba(227, 240, 175, 0.24); 
+  border: 1px solid #E3F0AF;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   z-index: 2;
+  backdrop-filter: blur(8px);
+  vertical-align: middle;
 }
 .big-text {
   font-size: 38px;
@@ -169,9 +178,12 @@ section {
 }
 
 .smaller-description {
-  padding: 5px 15px;
+  padding: 5px 5px 0 5px;
   height: 100%;
   max-height: 50px;
+  padding: 15px 0 10px 15px ;  
+  text-align: left;
+  
 }
 
 .chat-description:focus,
@@ -190,7 +202,7 @@ section {
   transition: background-color 0.3s ease;
   color: white;
   background-color: #0A5E36;
-  margin-top: 20px;
+  margin-top: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -337,12 +349,12 @@ html, body {
 
 .suggestions-list {
   position: absolute;
-  top: 100%; 
+  top: 65%; 
   left: 0; 
   width: 100%; 
   background-color: #FBF6E9; 
   border: 1px solid #226E48;
-  border-top: none; 
+  border-top: 1px black; 
   list-style-type: none;
   padding: 0;
   margin: 0; 
@@ -350,6 +362,8 @@ html, body {
   z-index: 1000; 
   max-height: 120px; /* Approx. 5 items */
   overflow-y: auto;
+  border-radius: 0 0 20px 20px;
+  border-top: 1px solid rgb(206, 202, 202)
 }
 
 .dark .suggestions-list {
@@ -388,4 +402,17 @@ html, body {
 .dark .suggestion-item:hover {
   background-color: #4a4a4a; 
   color: #ffffff;
+}
+
+
+.suggestions-list {
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.suggestions-list.hidden {
+  opacity: 0;
+  transform: translateY(-5px);
+  pointer-events: none;
 }
