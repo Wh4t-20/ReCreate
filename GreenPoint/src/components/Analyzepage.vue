@@ -45,8 +45,6 @@
         isDarkMode: false,
         audio: null,
         // Added for suggestions
-        suggestions: [], 
-        debounceTimer: null 
       };
     },
     mounted() {
@@ -64,6 +62,7 @@
       }
     },
     methods: {
+      // dark mode fr fr 
       toggleTheme() {
         document.body.classList.toggle('dark');
         this.isDarkMode = !this.isDarkMode;
