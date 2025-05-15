@@ -14,19 +14,25 @@
 
     <div class="placeholder">
       <p class="big-text">GreenPoint</p>
-      <p class="reg-text">Plan</p>
+      <p class="reg-text">Plan Description</p>
       <textarea
         class="chat-description"
-        placeholder="Describe your plans as precise as possible"
+        placeholder="Describe your plans as precise as possible (e.g., 'Setup a small farm for personal consumption focusing on leafy greens.')"
         v-model="description"
         required
       ></textarea>
+
+      <p class="reg-text">Selected Location</p>
+      <div class="location-info-display">
+        <span v-if="latitude && longitude">Lat: {{ latitude }}, Lng: {{ longitude }}</span>
+        <span v-else>No location selected. Please go back to the map.</span>
+      </div>
 
       <p class="reg-text">Plant</p>
       <div class="plant-search-widget-container"> 
         <textarea
           class="smaller-description"
-          placeholder="Enter a plant"
+          placeholder="Enter a plant to analyze"
           v-model="plantSearchInput"
           @input="handlePlantInput"
           @focus="showPlantSuggestions = plantSuggestions.length > 0 && plantSearchInput.length > 0"
@@ -47,27 +53,81 @@
         </div>
       </div>
 
-      <button class="analyze-button" @click="getValue">Analyze</button>
+      <button class="analyze-button" @click="triggerAnalysis" :disabled="isLoadingAnalysis">
+        {{ isLoadingAnalysis ? 'Analyzing...' : 'Analyze Suitability' }}
+      </button>
     </div>
+
+    <div v-if="showAnalysisModal" class="analysis-modal-overlay" @click.self="closeAnalysisModal">
+      <div class="analysis-modal-content">
+        <button class="analysis-modal-close-button" @click="closeAnalysisModal">&times;</button>
+        <h3>Agricultural Suitability Analysis</h3>
+        <div v-if="isLoadingAnalysis" class="loading-spinner">Loading analysis...</div>
+        <div v-if="analysisResult && analysisResult.ai_analysis">
+          <div v-if="analysisResult.ai_analysis.success">
+            <div class="score-section">
+              <h4>Feasibility Score: {{ feasibilityScore !== null ? feasibilityScore + '/10' : 'N/A' }}</h4>
+              <div class="score-bar-container">
+                <div 
+                  v-for="i in 10" :key="'fs-'+i" 
+                  :class="getScoreBoxClass(feasibilityScore, i, 'feasibility')"
+                ></div>
+              </div>
+            </div>
+            <div class="score-section">
+              <h4>Sustainability Score: {{ sustainabilityScore !== null ? sustainabilityScore + '/10' : 'N/A' }}</h4>
+              <div class="score-bar-container">
+                <div 
+                  v-for="i in 10" :key="'ss-'+i" 
+                  :class="getScoreBoxClass(sustainabilityScore, i, 'sustainability')"
+                ></div>
+              </div>
+            </div>
+            <hr class="modal-divider">
+            <div class="analysis-text-content" v-html="formatAnalysisText(analysisResult.ai_analysis.analysis_text)"></div>
+          </div>
+          <div v-else class="analysis-error">
+            <p><strong>Error fetching analysis:</strong></p>
+            <p>{{ analysisResult.ai_analysis.error }}</p>
+            <pre v-if="analysisResult.ai_analysis.details">{{ analysisResult.ai_analysis.details }}</pre>
+          </div>
+        </div>
+         <div v-else-if="!isLoadingAnalysis && analysisResult">
+            <p>No analysis data received or an unexpected error occurred.</p>
+            <pre>{{ analysisResult }}</pre>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
-import axios from 'axios'; // Assuming you'll use axios for API calls
+import axios from 'axios'; 
+import { marked } from 'marked'; 
 
 export default {
   name: 'Analyzepage',
   data() {
     return {
-      plantSearchInput: '', // User's input for plant search
-      plant: '', // Final selected plant (Scientific Name)
+      plantSearchInput: '', 
+      plant: '', 
       description: '',
       isDarkMode: false,
       audio: null,
-      allPlants: [], // To store all plants from the CSV { ScientificName, COMNAME, commonNamesArray }
-      plantSuggestions: [], // To store filtered suggestions { ScientificName, matchedCommonName (optional) }
+      allPlants: [], 
+      plantSuggestions: [], 
       showPlantSuggestions: false,
-      blurTimeout: null, // For handling blur and click on suggestions
+      blurTimeout: null,
+      
+      latitude: null,
+      longitude: null,
+      analysisResult: null, 
+      showAnalysisModal: false,
+      isLoadingAnalysis: false,
+
+      feasibilityScore: null,
+      sustainabilityScore: null,
     };
   },
   async mounted() {
@@ -82,34 +142,136 @@ export default {
         console.warn("Could not initialize audio:", e);
         this.audio = null;
     }
-    await this.fetchAllPlants(); // Fetch plants when component mounts
+    await this.fetchAllPlants();
+
+    if (this.$route.query.lat && this.$route.query.lon) {
+      this.latitude = parseFloat(this.$route.query.lat);
+      this.longitude = parseFloat(this.$route.query.lon);
+      console.log(`Received Lat: ${this.latitude}, Lon: ${this.longitude}`);
+    } else {
+      console.warn("Latitude or Longitude not provided in route query.");
+    }
   },
   methods: {
     toggleTheme() {
       document.body.classList.toggle('dark');
       this.isDarkMode = !this.isDarkMode;
       localStorage.setItem('darkMode', this.isDarkMode);
-
       if (this.audio) {
         this.audio.currentTime = 0; 
-        this.audio.play().catch((e) => {
-          console.warn("Audio couldn't play:", e);
-        });
+        this.audio.play().catch(e => console.warn("Audio couldn't play:", e));
       }
     },
-    getValue() {
-      if(!this.description || !this.plant) { // Check 'plant' which holds the selected scientific name
-        alert("Please describe your plan and select a plant from the suggestions.");
+    
+    async triggerAnalysis() {
+      if (!this.description || !this.plant) {
+        alert("Please provide a plan description and select a plant.");
         return;
       }
-      alert(`Plan: ${this.description} \nSelected Plant (Scientific Name): ${this.plant}`);
-      // Here you would proceed with sending this.plant (ScientificName), 
-      // this.description, and lat/lon to your backend /api/get-combined-data
+      if (!this.latitude || !this.longitude) {
+        alert("Location coordinates are missing. Please select a location on the map first.");
+        return;
+      }
+
+      this.isLoadingAnalysis = true;
+      this.showAnalysisModal = true; 
+      this.analysisResult = null; 
+      this.feasibilityScore = null; 
+      this.sustainabilityScore = null;
+
+      try {
+        const payload = {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          plantScientificName: this.plant, 
+          planDescription: this.description 
+        };
+        const response = await axios.post('http://localhost:3002/api/get-combined-data', payload);
+        this.analysisResult = response.data;
+
+        if (this.analysisResult && this.analysisResult.ai_analysis && this.analysisResult.ai_analysis.success) {
+          this.parseAndSetScores(this.analysisResult.ai_analysis.analysis_text);
+        }
+
+      } catch (error) {
+        console.error("Error calling analysis API:", error.response ? error.response.data : error.message);
+        this.analysisResult = { 
+          ai_analysis: { 
+            success: false, 
+            error: "Failed to connect to the analysis service or an error occurred.",
+            details: error.response ? JSON.stringify(error.response.data, null, 2) : error.message
+          }
+        };
+      } finally {
+        this.isLoadingAnalysis = false;
+      }
+    },
+
+    parseAndSetScores(analysisText) {
+      if (!analysisText) return;
+
+      // Regex to find "Feasibility Score (1-10):" followed by any characters (non-greedy)
+      // and then "Score : X/10" or "Score: X/10" or "Score :X/10" or "Score:X/10"
+      // It captures the digit(s) X.
+      const feasibilityRegex = /Feasibility Score.*?Score\s*:\s*(\d+)\/10/is;
+      const sustainabilityRegex = /Sustainability Score.*?Score\s*:\s*(\d+)\/10/is;
+      // 'i' flag for case-insensitive, 's' flag allows '.' to match newline characters.
+
+      const feasibilityMatch = analysisText.match(feasibilityRegex);
+      if (feasibilityMatch && feasibilityMatch[1]) {
+        this.feasibilityScore = parseInt(feasibilityMatch[1], 10);
+      } else {
+        console.warn("Could not parse Feasibility Score from AI text. Text was:", analysisText);
+        this.feasibilityScore = null; 
+      }
+
+      const sustainabilityMatch = analysisText.match(sustainabilityRegex);
+      if (sustainabilityMatch && sustainabilityMatch[1]) {
+        this.sustainabilityScore = parseInt(sustainabilityMatch[1], 10);
+      } else {
+        console.warn("Could not parse Sustainability Score from AI text. Text was:", analysisText);
+        this.sustainabilityScore = null; 
+      }
+      console.log("Parsed Scores:", {feasibility: this.feasibilityScore, sustainability: this.sustainabilityScore });
+    },
+
+    getScoreBoxClass(score, boxIndex, scoreType /* for theming, e.g., 'feasibility' or 'sustainability' */) {
+      if (score === null || score === undefined) {
+        return 'score-box empty'; 
+      }
+      let colorClass = 'red'; 
+      if (score >= 8) {
+        colorClass = 'green';
+      } else if (score >= 4) { // Changed from 5 to 4 to make the yellow range inclusive of 4,5,6,7
+        colorClass = 'yellow';
+      }
+      // Scores 1, 2, 3 will remain red
+      
+      if (boxIndex <= score) {
+        return `score-box filled ${colorClass}`;
+      }
+      return 'score-box empty';
+    },
+
+    closeAnalysisModal() {
+      this.showAnalysisModal = false;
+      this.analysisResult = null; 
+      this.feasibilityScore = null;
+      this.sustainabilityScore = null;
+    },
+
+    formatAnalysisText(markdownText) {
+      if (!markdownText) return '';
+      marked.setOptions({
+        gfm: true,          
+        breaks: true,       
+        sanitize: false,    
+      });
+      return marked.parse(markdownText); 
     },
 
     async fetchAllPlants() {
       try {
-        // Make sure your backend server (server.js) is running and accessible at this URL
         const response = await axios.get('http://localhost:3002/api/plants');
         this.allPlants = response.data.map(p => {
           const commonNamesArray = p.COMNAME 
@@ -118,68 +280,58 @@ export default {
           return { 
             ...p, 
             commonNamesArray,
-            ScientificNameLower: p.ScientificName ? p.ScientificName.toLowerCase() : '' // Pre-lowercase for searching
+            ScientificNameLower: p.ScientificName ? p.ScientificName.toLowerCase() : ''
           };
         });
-        console.log("Fetched and processed plants:", this.allPlants.length);
       } catch (error) {
         console.error("Failed to fetch plants:", error);
-        // Optionally, inform the user that plant suggestions might not be available
       }
     },
-
     handlePlantInput() {
-      if (!this.plantSearchInput.trim()) {
+      if (this.blurTimeout) clearTimeout(this.blurTimeout);
+      const query = this.plantSearchInput.trim().toLowerCase();
+      if (!query) {
         this.plantSuggestions = [];
         this.showPlantSuggestions = false;
+        this.plant = '';
         return;
       }
-
-      const searchLower = this.plantSearchInput.trim().toLowerCase();
       const filtered = [];
-      
+      const addedScientificNames = new Set();
       for (const plant of this.allPlants) {
         let matchedCommonName = null;
-
-        // Check against scientific name
-        if (plant.ScientificNameLower && plant.ScientificNameLower.includes(searchLower)) {
-          if (!filtered.some(s => s.ScientificName === plant.ScientificName)) {
-             filtered.push({ ScientificName: plant.ScientificName, matchedCommonName: null }); 
+        if (plant.ScientificNameLower && plant.ScientificNameLower.includes(query)) {
+          if (!addedScientificNames.has(plant.ScientificName)) {
+             filtered.push({ ScientificName: plant.ScientificName, matchedCommonName: null });
+             addedScientificNames.add(plant.ScientificName);
           }
-        } else {
-          // Check against common names
-          if (plant.commonNamesArray) {
-            const foundCommonName = plant.commonNamesArray.find(cn => cn.includes(searchLower));
-            if (foundCommonName) {
-              if (!filtered.some(s => s.ScientificName === plant.ScientificName)) {
-                const originalCommonNames = plant.COMNAME ? plant.COMNAME.split(',').map(name => name.trim()) : [];
-                const originalMatched = originalCommonNames.find(ocn => ocn.toLowerCase().includes(searchLower));
-                matchedCommonName = originalMatched || foundCommonName; 
-                filtered.push({ ScientificName: plant.ScientificName, matchedCommonName: matchedCommonName });
-              }
+        } else if (plant.commonNamesArray && plant.commonNamesArray.length > 0) {
+          const foundCommonNameInArray = plant.commonNamesArray.find(cn => cn.includes(query));
+          if (foundCommonNameInArray) {
+            if (!addedScientificNames.has(plant.ScientificName)) {
+              const originalCommonNames = plant.COMNAME ? plant.COMNAME.split(',').map(name => name.trim()) : [];
+              const originalMatched = originalCommonNames.find(ocn => ocn.toLowerCase().includes(query));
+              matchedCommonName = originalMatched || foundCommonNameInArray;
+              filtered.push({ ScientificName: plant.ScientificName, matchedCommonName: matchedCommonName });
+              addedScientificNames.add(plant.ScientificName);
             }
           }
         }
-        if (filtered.length >= 7) {
-          break; 
-        }
+        if (filtered.length >= 7) break;
       }
-      
       this.plantSuggestions = filtered;
       this.showPlantSuggestions = filtered.length > 0;
     },
-
     selectPlantSuggestion(scientificName) {
-      this.plant = scientificName; 
-      this.plantSearchInput = scientificName; 
+      this.plant = scientificName;
+      this.plantSearchInput = scientificName;
       this.showPlantSuggestions = false;
       this.plantSuggestions = [];
     },
-
     handlePlantInputBlur() {
       this.blurTimeout = setTimeout(() => {
         this.showPlantSuggestions = false;
-      }, 200); 
+      }, 200);
     }
   },
   beforeUnmount() {

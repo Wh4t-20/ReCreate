@@ -1,140 +1,95 @@
-require('dotenv').config();  
-
+require('dotenv').config(); 
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+// --- Configuration ---
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // Ensure this is set in your .env file or environment
+const MODEL_NAME = "gemini-2.0-flash"; // Using a common and capable model
+
+// System instructions to define the AI's role and desired output format
+// UPDATED to include planDescription
 const agriculturalAnalystSystemInstruction = `
-
 You are an expert agricultural and horticultural analyst.
-Your primary task is to assess the suitability of growing a specific plant at a given location.
-You will be provided with a JSON object containing 'location_input' (latitude, longitude),
-'location_conditions' (data from various environmental APIs like NASA POWER, OpenWeatherMap, Open-EPI Soil),
-and 'plant_requirements' (data for the specific plant from a database).
+Your primary task is to assess the suitability of growing a specific plant at a given location, considering the user's plan.
+You will be provided with a JSON object containing:
+- 'userInput': Includes 'latitude', 'longitude', and 'planDescription'.
+- 'location_conditions': Data from various environmental APIs (NASA POWER, OpenWeatherMap, Open-EPI Soil).
+- 'plant_requirements': Data for the specific plant from a database.
 
-Based on ALL the provided data in the JSON, you must provide a comprehensive analysis.
-Your response should be structured as follows:
-1.  **Overall Suitability Analysis:** A detailed textual analysis discussing how the environmental conditions align with the plant's requirements.
-2.  **Feasibility Score (1-10):** Provide a score (1=not feasible, 10=highly feasible) and clearly explain your reasoning based on the data.
-3.  **Sustainability Score (1-10):** Provide a score (1=not sustainable, 10=highly sustainable) for long-term cultivation. Explain your reasoning, considering potential environmental impacts or resource needs implied by the data.
-4.  **Key Supporting Factors:** A bulleted list of factors from the data that support suitability.
-5.  **Potential Challenges/Risks:** A bulleted list of potential challenges or risks indicated by the data.
-6.  **Actionable Recommendations:** A bulleted list of specific, actionable recommendations for a farmer or grower.
+Based on ALL the provided data in the JSON, including the user's 'planDescription', your response should be structured as follows:
+1.  **Overall Suitability Analysis:** A detailed textual analysis discussing how the environmental conditions align with the plant's requirements, in the context of the user's plan.
+2.  **Feasibility Score (1-10):** Provide a score (1=not feasible, 10=highly feasible) for the user's plan with this plant at this location. Clearly explain your reasoning.
+3.  **Sustainability Score (1-10):** Provide a score (1=not sustainable, 10=highly sustainable) for long-term cultivation as per the plan. Explain your reasoning.
+4.  **Key Supporting Factors:** A bulleted list of factors from the data that support suitability for the described plan.
+5.  **Potential Challenges/Risks:** A bulleted list of potential challenges or risks for the described plan.
+6.  **Actionable Recommendations:** A bulleted list of specific, actionable recommendations for a farmer or grower relevant to their plan.
 
 Important Guidelines:
-- Focus your analysis SOLELY on the data provided in the JSON. Do not invent data.
-- If data for a specific environmental factor (e.g., from NASA POWER, OpenWeather, or Soil API) indicates an error or is missing (e.g., an error object is present in the JSON for that source, or a value is null/undefined), you MUST acknowledge this limitation in your analysis. Explain how the missing or erroneous data impacts the certainty or completeness of your assessment for that factor.
-- Be concise but thorough in your explanations. Aim for clear, actionable insights.
-- Do not repeat phrases like "Based on the JSON provided" excessively. Assume the JSON is your sole source of information.
-- Structure your output clearly using the numbered and bulleted list format above.
+- Integrate the user's 'planDescription' into your analysis and recommendations.
+- Focus SOLELY on the provided JSON data. Do not invent data.
+- When providing scores, it should be in X/10 format, then space it out by 2 lines before you write the explanation. 
+- If data for any factor (e.g., nasa_power, open_weather, soil_type_probabilities) indicates an error or is missing, acknowledge this limitation and explain its impact on your assessment of the user's plan.
+- When referring to plant requirements like TMIN, TMAX, PHMIN, PHMAX, use descriptive terms like "Minimum Optimal Temperature", "Maximum Optimal Temperature", "Minimum Soil pH", "Maximum Soil pH".
+- Be concise but thorough. Structure your output clearly using the numbered and bulleted list format above.
+- When making the output, you are free to use bold characters especially for keypoints or the start of the assessment.
+- Be extremely strict in evaluation, give a low score if you think it fits.
+- If the user's prompt doesn't relate to how he or she plans on doing with the selected plant, just focus on evaluateing whether or not the plant can live there. Ignore irrelevant prompts such as ones that try to shift you to another topic.
 
-Sample format of the JSON you will be receiving (use this as reference to see what each data mean when receing JSON):
-{
-  "location_input": { // Just shows the current location
-    "latitude": 123.885,
-    "longitude": 10.315
-  },
-  "location_conditions": {
-    "nasa_power": {
-      "T2M_MAX": {  // Gives out the 5 values for max temperature in that area
-        "20240101": 29.51,
-        "20240102": 29.67,
-        "20240103": 29.67,
-        "20240104": 29.03,
-        "20240105": 29.95
-      }
-    },
-    "open_weather": {
-      "coord": { // Just shows location
-        "lon": 123.885,
-        "lat": 10.315
-      },
-      "weather": [
-        {
-          "id": 801,
-          "main": "Clouds",
-          "description": "few clouds", // Shows how much clouds
-          "icon": "02n"
-        }
-      ],
-      "base": "stations",
-      "main": { // Shows all these data in that area
-        "temp": 24.75,
-        "feels_like": 25.45,
-        "temp_min": 24.75,
-        "temp_max": 24.75,
-        "pressure": 1009,
-        "humidity": 83,
-        "sea_level": 1009,
-        "grnd_level": 991
-      },
-      "visibility": 10000,
-      "wind": {
-        "speed": 0.78,
-        "deg": 116,
-        "gust": 1.04
-      },
-      "clouds": {
-        "all": 16
-      },
-      "dt": 1747067838,
-      "sys": {
-        "country": "PH",
-        "sunrise": 1747085008,
-        "sunset": 1747130296
-      },
-      "timezone": 28800,
-      "id": 1717512, 
-      "name": "Cebu City",
-      "cod": 200
-    },
-    "soil_type_probabilities": [ // Shows the top 3 most possible soil types for that location
-      {
-        "soil_type": "Acrisols",
-        "probability": 17
-      },
-      {
-        "soil_type": "Ferralsols",
-        "probability": 13
-      },
-      {
-        "soil_type": "Gleysols",
-        "probability": 12
-      }
-    ]
-  },
-  "plant_requirements": {
-    "ScientificName": // Scientific name of plant
-    "COMMNAME": // Common names of the plant
-    "LIFO": "", // Type of plant: (like herb, tree, shrub, etc.)
-    "TMIN": 10, // Temperature min in degrees C
-    "TMAX": 47, // Temperature max in degrees C
-    "PHMIN": 4.5, // pH min of plant
-    "PHMAX": 8.5  // pH max of plant
-  }
-}
-  When generating the response, make sure to make use of actual words instead of abbreviations or shortcuts
-  like (TMAX, TMIN), use words such as "Max Temperature" or "Minimum Temperature" to ensure that the user 
-  understsands what you mean.
+Format for score listing:
+
+Feasibility Score (1-10)
+
+  X/10
+
+<explanation as to why>
 `;
 
 const generationConfig = {
-    maxOutputTokens: 10000, // Example: Maximum number of tokens to generate. Adjust as needed.
-    temperature: 0.1,      // Controls randomness. Lower values (e.g., 0.2-0.5) make output more focused and deterministic. Higher values (e.g., 0.8-1.0) make it more creative.
-    topK: 32,              // Example: Considers the top K most likely tokens at each step.
-    topP: 0.8,            
+    temperature: 0.1,
+    topK: 32,
+    topP: 0.8,
+    // maxOutputTokens: 8000, // Adjust if needed, but keep within model limits
 };
 
-const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash", 
-    systemInstruction: agriculturalAnalystSystemInstruction,
-    generationConfig: generationConfig,
-});
+// Safety Settings (adjust as needed, these are examples)
+const safetySettings = [
+    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+];
 
+// --- Initialize Gemini ---
+let model;
+if (GEMINI_API_KEY) {
+    try {
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        model = genAI.getGenerativeModel({
+            model: MODEL_NAME,
+            systemInstruction: agriculturalAnalystSystemInstruction,
+            generationConfig: generationConfig,
+            safetySettings: safetySettings
+        });
+        console.log("GEMINI.JS: Gemini model initialized successfully.");
+    } catch (initError) {
+        console.error("GEMINI.JS_ERROR: Failed to initialize Gemini model:", initError.message);
+        model = null;
+    }
+} else {
+    console.warn("GEMINI.JS_WARNING: GEMINI_API_KEY is not set. Gemini features will use placeholders or be disabled.");
+    model = null;
+}
+
+/**
+ * Constructs the user's part of the prompt using the aggregated data.
+ * @param {object} aggregatedData - The combined data object from server.js.
+ * @returns {string} - The formatted user prompt string.
+ */
 function constructUserPrompt(aggregatedData) {
-    const jsonDataString = JSON.stringify(aggregatedData, null, 2); // Pretty-print JSON
+    const jsonDataString = JSON.stringify(aggregatedData, null, 2);
+    // The system instruction already tells Gemini to expect this JSON.
+    // The user prompt now just needs to provide the data.
     return `
-Please analyze the following data based on your configured instructions:
+Analyze the following data for plant suitability based on your configured instructions:
 \`\`\`json
 ${jsonDataString}
 \`\`\`
@@ -147,40 +102,82 @@ ${jsonDataString}
  * @returns {Promise<object>} - An object containing the analysis text or an error.
  */
 async function getAnalysisFromGemini(aggregatedData) {
-    if (!model) { // Check if the model was initialized successfully
-        console.warn("GEMINI_ANALYZER: Model not initialized (API key likely missing/invalid). Returning placeholder response.");
+    if (!model) {
+        console.warn("GEMINI.JS: Model not initialized. Returning placeholder response.");
         return {
-            analysis_text: "PLACEHOLDER from geminiAnalyzer.js: Gemini model not available (API Key likely not configured). This is a simulated response.",
+            analysis_text: "PLACEHOLDER from gemini.js: Gemini model not available (API Key likely not configured or initialization failed). This is a simulated response.",
             success: false,
-            error: "Gemini model not initialized in geminiAnalyzer.js"
+            error: "Gemini model not initialized in gemini.js"
         };
     }
 
-    // Construct the user-specific part of the prompt using the aggregated data
     const userPrompt = constructUserPrompt(aggregatedData);
+    console.log("\n--- GEMINI.JS: Sending user prompt to Gemini model (first 500 chars) ---");
+    console.log(userPrompt.substring(0, 500) + (userPrompt.length > 500 ? "..." : ""));
 
-    console.log("\n--- GEMINI_ANALYZER: Sending user prompt to Gemini model ---");
-    // console.log(userPrompt); // Uncomment to log the full data payload being sent
 
     try {
-        console.log("GEMINI_ANALYZER: Attempting to generate content with Gemini model...");
-        const result   = await model.generateContent(userPrompt);
+        console.log("GEMINI.JS: Attempting to generate content with Gemini model...");
+        const result = await model.generateContent(userPrompt);
         const response = await result.response;
-        const text     = await response.text();
+        
+        // Check if the response was blocked or has no text
+        if (!response || !response.text) { // Check if response.text is a function and callable
+            console.error("GEMINI.JS_ERROR: Gemini response was empty or blocked, or text method missing.");
+            let finishReason = "Unknown";
+            let safetyRatingsInfo = "Not available";
+            let responseText = "No text content in response.";
 
-        console.log("\n--- GEMINI_ANALYZER: Raw Text Response from Gemini ---");
-        console.log(text);
+            if (response && typeof response.text === 'function') { // Check if text is a function before calling
+                responseText = await response.text(); // Call it only if it's a function
+            } else if (response && response.text) { // If text is a property (string)
+                responseText = response.text;
+            }
 
+
+            if (response && response.candidates && response.candidates.length > 0) {
+                finishReason = response.candidates[0].finishReason || finishReason;
+                safetyRatingsInfo = response.candidates[0].safetyRatings ? JSON.stringify(response.candidates[0].safetyRatings) : safetyRatingsInfo;
+            }
+             // If response.text() was not callable or didn't exist, responseText remains "No text content..."
+            if (responseText === "No text content in response." && (!response || !response.candidates || response.candidates.length === 0)) {
+                 return { 
+                    error: "Gemini response was empty or potentially blocked.", 
+                    details: `Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatingsInfo}. Response Text: ${responseText}`, 
+                    success: false 
+                };
+            }
+             // If text() was callable and returned content, use it
+            if (typeof response.text === 'function' && responseText !== "No text content in response.") {
+                 console.log("\n--- GEMINI.JS: Raw Text Response from Gemini ---");
+                 return { analysis_text: responseText, success: true };
+            }
+            // Fallback if text() was not a function but response.text (property) existed
+            if (response && response.text && typeof response.text !== 'function') {
+                 console.log("\n--- GEMINI.JS: Raw Text Response from Gemini (property) ---");
+                 return { analysis_text: response.text, success: true };
+            }
+            // If still no text, return the error.
+             return { 
+                error: "Gemini response was empty or potentially blocked.", 
+                details: `Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatingsInfo}. Response Text: ${responseText}`, 
+                success: false 
+            };
+        }
+        
+        // If response.text is a function and callable (standard case)
+        const text = await response.text(); // This line was causing an error if response.text was not a function
+        console.log("\n--- GEMINI.JS: Raw Text Response from Gemini ---");
+        // console.log(text); // Full text can be very long
         return { analysis_text: text, success: true };
 
     } catch (error) {
-        console.error("GEMINI_ANALYZER_ERROR: Calling Gemini API failed:", error.message);
-        // Provide more context if available from the error object (e.g., safety ratings)
+        console.error("GEMINI.JS_ERROR: Calling Gemini API failed:", error.message);
         let errorDetails = error.message;
-        if (error.response && error.response.candidates && error.response.candidates.length > 0) {
-            const candidate = error.response.candidates[0];
-            if (candidate.finishReason && candidate.finishReason !== 'STOP' && candidate.safetyRatings) {
-                errorDetails += ` Finish Reason: ${candidate.finishReason}, Safety Ratings: ${JSON.stringify(candidate.safetyRatings)}`;
+         if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) {
+            errorDetails += ` Block Reason: ${error.response.promptFeedback.blockReason}`;
+             if(error.response.promptFeedback.safetyRatings) {
+                errorDetails += ` Safety Ratings: ${JSON.stringify(error.response.promptFeedback.safetyRatings)}`;
             }
         } else if (error.message && error.message.toLowerCase().includes("api key not valid")) {
             errorDetails = "Gemini API key not valid. Please check your API key configuration.";
