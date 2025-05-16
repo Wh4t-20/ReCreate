@@ -1,7 +1,7 @@
 <template>
 <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden;">
     <header>
-      <img id="logo" src="/images/leaf.png" alt="Logo" />
+
       <h3 class="name">GreenPoint</h3>
       <button class="theme-button" @click="toggleTheme">
         <img 
@@ -29,7 +29,7 @@
         :disabled="!clickedLngLat"
         title="Select a location on the map first"
     >
-        Select location
+       Choose location
     </button>
 
 </div>
