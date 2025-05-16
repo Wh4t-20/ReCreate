@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <img id="logo" src="/images/leaf.png" alt="Logo" />
+
       <h3 class="name">GreenPoint</h3>
       <button class="theme-button" @click="toggleTheme">
         <img 

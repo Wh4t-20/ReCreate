@@ -1,7 +1,6 @@
 <template>
   <div>
     <header>
-      <img id="logo" src="/images/leaf.png" alt="Logo" />
       <h3 class="name">GreenPoint</h3>
       <button class="theme-button" @click="toggleTheme">
         <img 
@@ -41,7 +40,7 @@
         </li>
       </ul>
       </div>
-      <button @click="goToMap" class="analyze-button">Analyze</button>
+      <button @click="goToMap" class="analyze-button">Get Started</button>
 
     </div>
 
