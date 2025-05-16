@@ -193,12 +193,10 @@ export default {
     parseAndSetScores(analysisText) {
       if (!analysisText) return;
 
-      // Regex to find "Feasibility Score (1-10):" followed by any characters (non-greedy)
-      // and then "Score : X/10" or "Score: X/10" or "Score :X/10" or "Score:X/10"
+
       // It captures the digit(s) X.
       const feasibilityRegex = /Feasibility Score.*?Score\s*:\s*(\d+)\/10/is;
       const sustainabilityRegex = /Sustainability Score.*?Score\s*:\s*(\d+)\/10/is;
-      // 'i' flag for case-insensitive, 's' flag allows '.' to match newline characters.
 
       const feasibilityMatch = analysisText.match(feasibilityRegex);
       if (feasibilityMatch && feasibilityMatch[1]) {
@@ -225,10 +223,9 @@ export default {
       let colorClass = 'red'; 
       if (score >= 8) {
         colorClass = 'green';
-      } else if (score >= 4) { // Changed from 5 to 4 to make the yellow range inclusive of 4,5,6,7
+      } else if (score >= 4) { 
         colorClass = 'yellow';
       }
-      // Scores 1, 2, 3 will remain red
       
       if (boxIndex <= score) {
         return `score-box filled ${colorClass}`;

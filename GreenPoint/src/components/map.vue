@@ -29,7 +29,7 @@
         :disabled="!clickedLngLat"
         title="Select a location on the map first"
     >
-        Proceed to Analyze
+        Select location
     </button>
 
 </div>
@@ -37,17 +37,16 @@
 
 <script>
 import mapboxgl from 'mapbox-gl';
-import axios from 'axios'; // Keep if you plan other API calls here, otherwise not strictly needed for this page's core logic
-
+import axios from 'axios'; 
 export default {
-  name: 'MapPage', // Changed from MapView for clarity if you have multiple map-related views
+  name: 'MapPage', 
   data() {
     return {
       map: null,
       isDarkMode: false,
       audio: null,
-      clickedLngLat: null, // Stores {lng, lat} of the latest click
-      selectedMarker: null, // Stores the current mapboxgl.Marker instance
+      clickedLngLat: null, 
+      selectedMarker: null, 
     };
   },
   async mounted() {
@@ -63,13 +62,12 @@ export default {
         this.audio = null;
     }
 
-    // IMPORTANT: Use environment variables for sensitive tokens in production
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q'; // Your Mapbox token
-
+    const mapBoxAPIKey = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
     const initialLat = parseFloat(this.$route.query.lat);
     const initialLon = parseFloat(this.$route.query.lon);
     const locationName = this.$route.query.location || 'Cebu City'; 
 
+    mapboxgl.accessToken = mapBoxAPIKey;
     if (!isNaN(initialLat) && !isNaN(initialLon)) {
       this.initializeMap([initialLon, initialLat], locationName);
     } else {
@@ -115,10 +113,6 @@ export default {
         attributionControl: false 
       });
 
-      // Optional: Add an initial marker for the starting location if desired
-      // this.addOrUpdateMarker(centerCoordinates, `Initial: ${locationName}`);
-      // this.clickedLngLat = {lng: centerCoordinates[0], lat: centerCoordinates[1]}; // Also set if initial marker is desired
-
       this.map.on('click', (e) => {
         this.clickedLngLat = e.lngLat; // Store {lng, lat}
         this.addOrUpdateMarker(e.lngLat, "Selected Location");
@@ -133,27 +127,14 @@ export default {
       // Add a new marker
       this.selectedMarker = new mapboxgl.Marker({
           color: "#FF0000", // Example: Red marker
-          // You can use a custom element for a PNG pin:
-          // element: createCustomPinElement('/path/to/your/pin.png'),
       })
         .setLngLat(lngLat)
         .setPopup(new mapboxgl.Popup().setText(popupText)) // Optional: show popup on marker click
         .addTo(this.map);
       
-      // Optionally open the popup immediately
-      // this.selectedMarker.togglePopup();
+
     },
 
-    // Optional: Helper for custom PNG marker
-    // createCustomPinElement(imageUrl) {
-    //   const el = document.createElement('div');
-    //   el.className = 'custom-marker';
-    //   el.style.backgroundImage = `url(${imageUrl})`;
-    //   el.style.width = '30px'; // Set your pin's width
-    //   el.style.height = '40px'; // Set your pin's height
-    //   el.style.backgroundSize = 'cover';
-    //   return el;
-    // },
 
     handleResize() {
       if (this.map) {

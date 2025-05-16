@@ -1,12 +1,11 @@
 require('dotenv').config(); 
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 
-// --- Configuration ---
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // Ensure this is set in your .env file or environment
-const MODEL_NAME = "gemini-2.0-flash"; // Using a common and capable model
+// Configuration 
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY; 
+const MODEL_NAME = "gemini-2.0-flash"; 
 
-// System instructions to define the AI's role and desired output format
-// UPDATED to include planDescription
+// System instructions 
 const agriculturalAnalystSystemInstruction = `
 You are an expert agricultural and horticultural analyst.
 Your primary task is to assess the suitability of growing a specific plant at a given location, considering the user's plan.
@@ -47,10 +46,10 @@ const generationConfig = {
     temperature: 0.1,
     topK: 32,
     topP: 0.8,
-    // maxOutputTokens: 8000, // Adjust if needed, but keep within model limits
+
 };
 
-// Safety Settings (adjust as needed, these are examples)
+// Safety Settings
 const safetySettings = [
     { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
     { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
@@ -58,7 +57,7 @@ const safetySettings = [
     { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
 ];
 
-// --- Initialize Gemini ---
+//  Initialize Gemini 
 let model;
 if (GEMINI_API_KEY) {
     try {
@@ -86,8 +85,7 @@ if (GEMINI_API_KEY) {
  */
 function constructUserPrompt(aggregatedData) {
     const jsonDataString = JSON.stringify(aggregatedData, null, 2);
-    // The system instruction already tells Gemini to expect this JSON.
-    // The user prompt now just needs to provide the data.
+
     return `
 Analyze the following data for plant suitability based on your configured instructions:
 \`\`\`json
@@ -128,9 +126,9 @@ async function getAnalysisFromGemini(aggregatedData) {
             let safetyRatingsInfo = "Not available";
             let responseText = "No text content in response.";
 
-            if (response && typeof response.text === 'function') { // Check if text is a function before calling
-                responseText = await response.text(); // Call it only if it's a function
-            } else if (response && response.text) { // If text is a property (string)
+            if (response && typeof response.text === 'function') { 
+                responseText = await response.text(); 
+            } else if (response && response.text) { 
                 responseText = response.text;
             }
 
@@ -139,7 +137,7 @@ async function getAnalysisFromGemini(aggregatedData) {
                 finishReason = response.candidates[0].finishReason || finishReason;
                 safetyRatingsInfo = response.candidates[0].safetyRatings ? JSON.stringify(response.candidates[0].safetyRatings) : safetyRatingsInfo;
             }
-             // If response.text() was not callable or didn't exist, responseText remains "No text content..."
+             
             if (responseText === "No text content in response." && (!response || !response.candidates || response.candidates.length === 0)) {
                  return { 
                     error: "Gemini response was empty or potentially blocked.", 
@@ -147,7 +145,6 @@ async function getAnalysisFromGemini(aggregatedData) {
                     success: false 
                 };
             }
-             // If text() was callable and returned content, use it
             if (typeof response.text === 'function' && responseText !== "No text content in response.") {
                  console.log("\n--- GEMINI.JS: Raw Text Response from Gemini ---");
                  return { analysis_text: responseText, success: true };

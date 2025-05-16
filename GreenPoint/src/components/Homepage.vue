@@ -69,12 +69,12 @@ export default {
       document.body.classList.add('dark');
       this.isDarkMode = true;
     }
-    // Ensure the audio file path is correct for your project structure
+    // Audio
     try {
         this.audio = new Audio('/bang.mp3'); 
     } catch (e) {
         console.warn("Could not initialize audio:", e);
-        this.audio = null; // Set audio to null if initialization fails
+        this.audio = null; 
     }
   },
   methods: {
@@ -101,11 +101,9 @@ export default {
       }
 
       this.debounceTimer = setTimeout(async () => {
-        const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q'; 
+        const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN; 
         const encodedLocation = encodeURIComponent(this.location);
         
-        // Using Cebu City, Philippines as an example for proximity. 
-        // Format: longitude,latitude
         const proximityCoords = '123.8854,10.3157'; // Cebu City
         
         let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}&autocomplete=true`;
@@ -129,7 +127,6 @@ export default {
       }, 300); // Debounce delay 300ms
     },
 
-    // Method to handle selection of a suggestion
     selectSuggestion(suggestion) {
       this.location = suggestion.place_name; 
       this.suggestions = []; // Clear suggestions after selection
@@ -148,7 +145,7 @@ export default {
         return;
       }
 
-      const accessToken = 'pk.eyJ1IjoiY3VjdXJseXoiLCJhIjoiY21hMGx2ZjQ0MjZqNjJpcG1xNnhuZzN5eiJ9.9YAJFV1B_U8tY6bNL_aj9Q';
+      const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
       const encodedLocation = encodeURIComponent(this.location);
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedLocation}.json?access_token=${accessToken}`;
 

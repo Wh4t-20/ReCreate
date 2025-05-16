@@ -1,20 +1,20 @@
-// --- Essential Module Imports ---
+
 const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
 const fetch = require('node-fetch');
-// Import Gemini analysis function from gemini.js
-const { getAnalysisFromGemini } = require('./gemini'); // Assuming gemini.js is in the same directory
 
-// --- Express App Initialization ---
+const { getAnalysisFromGemini } = require('./gemini'); 
+
+// Express App Initialization 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-// --- Global Data Store for CSV ---
+// Global Data Store for CSV 
 const plantData = [];
 
 // --- Configuration ---
-const CSV_FILE_NAME = 'EcoCrop_DB.csv'; // Or your filtered_plants.csv
+const CSV_FILE_NAME = 'EcoCrop_DB.csv'; 
 
 // --- Middleware ---
 app.use((req, res, next) => {
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 
-// --- Read and Parse CSV File on Server Start ---
+// Read and Parse CSV File on Server Start 
 fs.createReadStream(CSV_FILE_NAME)
   .pipe(csv())
   .on('data', (row) => {
@@ -50,7 +50,7 @@ fs.createReadStream(CSV_FILE_NAME)
     console.error(`Error reading CSV file "${CSV_FILE_NAME}":`, error.message);
   });
 
-// --- Basic API Endpoints for Plant Data (from CSV) ---
+// Basic API Endpoints for Plant Data (from CSV) 
 app.get('/api/plants', (req, res) => {
   if (plantData.length > 0) {
     res.json(plantData);
@@ -90,7 +90,7 @@ app.get('/api/plants/search', (req, res) => {
   }
 });
 
-// --- API Endpoint for Combined Environmental Data and AI Analysis ---
+// API Endpoint for Combined Environmental Data and AI Analysis 
 app.post('/api/get-combined-data', async (req, res) => {
     // Destructure all expected inputs from the request body
     const { latitude, longitude, plantScientificName, planDescription } = req.body;
@@ -101,14 +101,14 @@ app.post('/api/get-combined-data', async (req, res) => {
     }
 
     try {
-        // Step 1: Find plant information from loaded CSV data
+        // Find plant information from loaded CSV data
         const plantInfo = plantData.find(p => p.ScientificName && p.ScientificName.toLowerCase() === plantScientificName.toLowerCase());
 
         if (!plantInfo) {
             return res.status(404).json({ error: `Plant data not found for ${plantScientificName}.` });
         }
 
-        // Step 2: Fetch environmental data from external APIs concurrently
+        // Fetch environmental data from external APIs concurrently
         const [
             nasaPowerData,
             openWeatherData,
@@ -138,16 +138,16 @@ app.post('/api/get-combined-data', async (req, res) => {
         };
         
         console.log("--- Aggregated Data Prepared for Gemini ---");
-        console.log(JSON.stringify(aggregatedData, null, 2)); // Log data being sent to Gemini module
+        console.log(JSON.stringify(aggregatedData, null, 2)); // 
         console.log("------------------------------------");
 
-        // Step 4: Get analysis from Gemini using the aggregated data
-        const geminiAnalysisResult = await getAnalysisFromGemini(aggregatedData); // Pass the whole object
+        // Get analysis from Gemini using the aggregated data
+        const geminiAnalysisResult = await getAnalysisFromGemini(aggregatedData); 
 
-        // Step 5: Send the combined response including original data and AI analysis
+        // Send the combined response including original data and AI analysis
         res.json({
-            data_summary: aggregatedData, // The data that was analyzed
-            ai_analysis: geminiAnalysisResult // The result from Gemini
+            data_summary: aggregatedData, 
+            ai_analysis: geminiAnalysisResult 
         });
 
     } catch (error) {
@@ -234,7 +234,7 @@ async function fetchSoilAPIWithRetry(latitude, longitude, retries = 3) { // Redu
     return { error: `Soil API request failed exhaustively after ${retries} attempts.` };
 }
 
-// --- Start Server ---
+// Start Server 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`To test, send a POST request to /api/get-combined-data with JSON body including: latitude, longitude, plantScientificName, and planDescription.`);
