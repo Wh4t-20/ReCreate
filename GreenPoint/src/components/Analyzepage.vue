@@ -31,7 +31,7 @@
       <p class="reg-text">Plant</p>
       <div class="plant-search-widget-container"> 
         <textarea
-          class="smaller-description"
+          class="txtplant"
           placeholder="Enter a plant to analyze"
           v-model="plantSearchInput"
           @input="handlePlantInput"
@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <button class="analyze-button" @click="triggerAnalysis" :disabled="isLoadingAnalysis">
+      <button class="finalanalyze" @click="triggerAnalysis" :disabled="isLoadingAnalysis">
         {{ isLoadingAnalysis ? 'Analyzing...' : 'Analyze Suitability' }}
       </button>
     </div>

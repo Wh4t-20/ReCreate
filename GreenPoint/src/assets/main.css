@@ -150,7 +150,7 @@ section {
   margin-top: 10px;
 }
 
-.chat-description, .smaller-description {
+.chat-description, .smaller-description , .txtplant{
   background-color: #F2F1EC;
   color: #010905;
   border: 1px solid #444;
@@ -170,6 +170,13 @@ section {
   height: 100%;
   max-height: 150px;
 }
+.txtplant{
+  padding: 15px 0px 5px 10px;
+  height: 100%;
+  max-height: 50px;
+
+}
+
 
 .smaller-description {
   padding: 15px 0px 5px 10px;
@@ -179,9 +186,29 @@ section {
 }
 
 .chat-description:focus,
-.smaller-description:focus {
+.smaller-description:focus, .txtplant:focus{
   outline: none;
   box-shadow: none;
+}
+.finalanalyze{
+    font-family: 'Iceberg', sans-serif;
+  padding: 10px 20px;
+  min-height: 40px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  background-color: #0A5E36;
+  margin-top: 30px;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1; 
+  overflow: hidden; 
 }
 .analyze-button {
   font-family: 'Iceberg', sans-serif;
@@ -244,11 +271,11 @@ section {
 }
 
 
-.analyze-button:hover::before {
+.analyze-button:hover::before ,.txtplant:hover::before{
   opacity: 1;
 }
 
-.analyze-button:active::after {
+.analyze-button:active::after, .txtplant:active::after{
   background: transparent;
 }
 
@@ -284,7 +311,8 @@ body:not(.dark) #bottom-text {
 }
 
 body:not(.dark) .chat-description,
-body:not(.dark) .smaller-description {
+body:not(.dark) .smaller-description,
+body:not(dark) .txtplant{
   background-color: #FBF6E9;
   color: #333;
   border-color: #226E48;
@@ -296,7 +324,7 @@ body:not(.dark) .analyze-button {
   overflow: hidden;
 }
 
-body:not(.dark) .analyze-button::before {
+body:not(.dark) .analyze-button::before, body:not(.dark) .txtplant::before  {
   content: "";
   position: absolute;
   inset: 0;
@@ -310,7 +338,7 @@ body:not(.dark) .analyze-button::before {
   z-index: -1;
 }
 
-body:not(.dark) .analyze-button:hover::before {
+body:not(.dark) .analyze-button:hover::before, body:not(.dark) .txtplant:hover::before {
   opacity: 1;
 }
 
@@ -333,6 +361,7 @@ html, body {
   position: relative;
   width: 100%;
 }
+
 
 .suggestions-list {
   position: absolute;
@@ -392,7 +421,7 @@ html, body {
 /* Plant suggestion bar thing, dont touch */
 .plant-search-widget-container { /* Renamed from .plant-input-container */
   position: relative; 
-  width: 90%; 
+  width: 100%; 
   max-width: 600px; 
   margin: 0 auto; 
 }
