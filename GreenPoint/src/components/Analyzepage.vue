@@ -1,7 +1,6 @@
 <template>
   <div>
     <header>
-
       <h3 class="name">GreenPoint</h3>
       <button class="theme-button" @click="toggleTheme">
         <img 
