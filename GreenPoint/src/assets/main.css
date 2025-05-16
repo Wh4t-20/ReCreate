@@ -24,7 +24,9 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 0px;
+  top: 0; 
   z-index: 5;
+  position: fixed;
 }
 .name {
   margin: 2px;
@@ -129,8 +131,9 @@ section {
 
 .chat {
   margin: 100px auto;
-  padding: 20px 30px;
+  padding: 15px 20px 20px 20px;
   width: 500px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   z-index: 2;
@@ -169,9 +172,10 @@ section {
 }
 
 .smaller-description {
-  padding: 5px 15px;
+  padding: 15px 0px 5px 10px;
   height: 100%;
   max-height: 50px;
+  margin-top: 50px;
 }
 
 .chat-description:focus,
@@ -190,7 +194,8 @@ section {
   transition: background-color 0.3s ease;
   color: white;
   background-color: #0A5E36;
-  margin-top: 20px;
+  margin-top: 50px;
+  white-space: nowrap;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -277,13 +282,7 @@ body:not(.dark) .reg-text {
 body:not(.dark) #bottom-text {
   color: #118B50;
 }
-/*
-body:not(.dark) .chat {
-  background: #e3f0af20;
-  box-shadow: 10px 7px 40px -15px black;
-  border: 1px solid #F0F7D5;
-}
-*/
+
 body:not(.dark) .chat-description,
 body:not(.dark) .smaller-description {
   background-color: #FBF6E9;
@@ -337,12 +336,12 @@ html, body {
 
 .suggestions-list {
   position: absolute;
-  top: 100%; 
+  top: 80%; 
   left: 0; 
   width: 100%; 
   background-color: #FBF6E9; 
   border: 1px solid #226E48;
-  border-top: none; 
+  border-top: 1px solid rgb(216, 212, 212); 
   list-style-type: none;
   padding: 0;
   margin: 0; 
@@ -350,6 +349,7 @@ html, body {
   z-index: 1000; 
   max-height: 120px; /* Approx. 5 items */
   overflow-y: auto;
+  border-radius: 0px 0px 20px 20px;
 }
 
 .dark .suggestions-list {
@@ -568,3 +568,4 @@ html, body {
 .dark .analysis-error pre { background-color: var(--error-pre-bg-color-dark, #222); color: #ccc; }
 .loading-spinner { text-align: center; padding: 25px; font-size: 1.3em; color: var(--modal-text-color, #555); }
 .dark .loading-spinner { color: var(--modal-text-color-dark, #bbb); }
+
