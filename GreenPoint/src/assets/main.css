@@ -481,7 +481,7 @@ html, body {
   padding-bottom: 10px; margin-bottom: 15px;
 }
 .dark .analysis-modal-content h3 {
-  color: var(--modal-header-color-dark, #58a6ff); /* Or a light green from your theme */
+  color: var(--modal-header-color-dark, #118B50); /* Or a light green from your theme */
   border-bottom-color: var(--modal-header-border-color-dark, #444);
 }
 .analysis-text-content { line-height: 1.6; white-space: pre-wrap; }
