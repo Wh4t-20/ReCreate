@@ -66,24 +66,7 @@
         <div v-if="analysisResult && analysisResult.ai_analysis">
           <div v-if="analysisResult.ai_analysis.success">
             <div class="score-section">
-              <h4>Feasibility Score: {{ feasibilityScore !== null ? feasibilityScore + '/10' : 'N/A' }}</h4>
-              <div class="score-bar-container">
-                <div 
-                  v-for="i in 10" :key="'fs-'+i" 
-                  :class="getScoreBoxClass(feasibilityScore, i, 'feasibility')"
-                ></div>
-              </div>
             </div>
-            <div class="score-section">
-              <h4>Sustainability Score: {{ sustainabilityScore !== null ? sustainabilityScore + '/10' : 'N/A' }}</h4>
-              <div class="score-bar-container">
-                <div 
-                  v-for="i in 10" :key="'ss-'+i" 
-                  :class="getScoreBoxClass(sustainabilityScore, i, 'sustainability')"
-                ></div>
-              </div>
-            </div>
-            <hr class="modal-divider">
             <div class="analysis-text-content" v-html="formatAnalysisText(analysisResult.ai_analysis.analysis_text)"></div>
           </div>
           <div v-else class="analysis-error">

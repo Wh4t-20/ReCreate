@@ -108,17 +108,17 @@ section {
   outline: none;
   border: none;
   border-radius: 50px;
-  width: 250px;
-  height: 70px;
-  font-size: 20px;
+  width: 200px;
+  height: 50px;
+  font-size: 24px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   color: white;
   background-color: #0A5E36;
   margin-top: 30px;
-  position: absolute;
+  position: fixed;
   left: 50%;
-  top: 89%;
+  top: 80%;
   transform: translateX(-50%);
   z-index: 1;
   overflow: hidden;
@@ -440,7 +440,8 @@ html, body {
   font-style: italic;
 }
 /* End of plant suggestion bar thing*/
-/* --- STYLES FOR ANALYSIS MODAL (Copied from previous version, ensure they fit your theme) --- */
+
+/* --- STYLES FOR ANALYSIS MODAL --- */
 .analysis-modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -448,6 +449,7 @@ html, body {
   display: flex; justify-content: center; align-items: center;
   z-index: 2000;
 }
+
 .analysis-modal-content {
   background-color: var(--modal-bg-color, #fff); 
   color: var(--modal-text-color, #333); 
@@ -461,17 +463,20 @@ html, body {
   position: relative; 
   font-size: 1.1em; /* MODIFIED: Base font size for modal content increased */
 }
+
 .dark .analysis-modal-content { 
   background-color: var(--modal-bg-color-dark, #2d2d2d);
   color: var(--modal-text-color-dark, #e0e0e0);
   border: 1px solid #444;
 }
+
 .analysis-modal-close-button {
   position: absolute; top: 10px; right: 15px;
   background: none; border: none; font-size: 28px; 
   font-weight: bold; color: var(--modal-close-btn-color, #888);
   cursor: pointer;
 }
+
 .dark .analysis-modal-close-button { color: var(--modal-close-btn-color-dark, #bbb); }
 .analysis-modal-close-button:hover { color: var(--modal-close-btn-hover-color, #555); }
 .dark .analysis-modal-close-button:hover { color: var(--modal-close-btn-hover-color-dark, #fff); }
@@ -480,30 +485,63 @@ html, body {
   border-bottom: 1px solid var(--modal-header-border-color, #ccc); /* Adjusted border */
   padding-bottom: 10px; margin-bottom: 15px;
 }
+
 .dark .analysis-modal-content h3 {
   color: var(--modal-header-color-dark, #118B50); /* Or a light green from your theme */
   border-bottom-color: var(--modal-header-border-color-dark, #444);
 }
-.analysis-text-content { line-height: 1.6; white-space: pre-wrap; }
-.analysis-error p { color: var(--error-text-color, #D8000C); margin-bottom: 5px; }
-.dark .analysis-error p { color: var(--error-text-color-dark, #ff8a8a); }
-.analysis-error pre {
-  background-color: var(--error-pre-bg-color, #f0f0f0); padding: 10px;
-  border-radius: 4px; font-size: 0.9em; white-space: pre-wrap; word-break: break-all;
+
+/*Analsys Text*/
+.analysis-text-content { 
+  line-height: 1.6; 
+  white-space: pre-wrap; 
 }
-.dark .analysis-error pre { background-color: var(--error-pre-bg-color-dark, #222); color: #ccc; }
-.loading-spinner { text-align: center; padding: 20px; font-size: 1.2em; color: var(--modal-text-color, #555); }
-.dark .loading-spinner { color: var(--modal-text-color-dark, #bbb); }
+
+.analysis-error p { 
+  color: var(--error-text-color, #D8000C); 
+  margin-bottom: 5px; 
+}
+
+.dark .analysis-error p { 
+  color: var(--error-text-color-dark, #ff8a8a); 
+}
+
+.analysis-error pre {
+  background-color: var(--error-pre-bg-color, #f0f0f0); 
+  padding: 10px;
+  border-radius: 4px; 
+  font-size: 0.9em; 
+  white-space: pre-wrap; 
+  word-break: break-all;
+}
+
+.dark .analysis-error pre { 
+  background-color: var(--error-pre-bg-color-dark, #222); 
+  color: #ccc; 
+}
+
+.loading-spinner { 
+  text-align: center; 
+  padding: 20px; 
+  font-size: 1.2em; 
+  color: var(--modal-text-color, #555); 
+}
+
+.dark .loading-spinner { 
+  color: var(--modal-text-color-dark, #bbb); 
+}
 
 .score-section {
   margin-bottom: 15px;
 }
+
 .score-section h4 {
   margin-top: 0;
   margin-bottom: 8px;
   font-size: 1.1em; /* Font size for "Feasibility Score: X/10" */
   color: var(--modal-text-color, #333);
 }
+
 .dark .score-section h4 {
   color: var(--modal-text-color-dark, #e0e0e0);
 }
@@ -548,24 +586,53 @@ html, body {
   background-color: var(--modal-divider-color, #eee);
   margin: 20px 0;
 }
+
 .dark .modal-divider {
   background-color: var(--modal-divider-color-dark, #444);
 }
 
-.analysis-text-content { line-height: 1.7; font-size: 1em; }
-.analysis-text-content p, 
-.analysis-text-content li { margin-bottom: 0.8em; }
-.analysis-text-content strong { font-weight: 600; }
-.analysis-text-content ul,
-.analysis-text-content ol { padding-left: 25px; margin-top: 0.5em; margin-bottom: 1em;}
-
-.analysis-error p { color: var(--error-text-color, #D8000C); margin-bottom: 8px; font-size: 1.05em; }
-.dark .analysis-error p { color: var(--error-text-color-dark, #ff8a8a); }
-.analysis-error pre {
-  background-color: var(--error-pre-bg-color, #f0f0f0); padding: 12px;
-  border-radius: 4px; font-size: 0.95em; white-space: pre-wrap; word-break: break-all;
+.analysis-text-content { 
+  line-height: 1.7; 
+  font-size: 1em; 
 }
-.dark .analysis-error pre { background-color: var(--error-pre-bg-color-dark, #222); color: #ccc; }
+.analysis-text-content p, .analysis-text-content li { 
+  margin-bottom: 0.8em; 
+}
+
+.analysis-text-content strong { 
+  font-weight: 600; 
+}
+
+.analysis-text-content ul, .analysis-text-content ol { 
+  padding-left: 25px; 
+  margin-top: 0.5em; 
+  margin-bottom: 1em;
+}
+
+.analysis-error p { 
+  color: var(--error-text-color, #D8000C); 
+  margin-bottom: 8px; 
+  font-size: 1.05em; 
+}
+
+.dark .analysis-error p { 
+  color: var(--error-text-color-dark, #ff8a8a); 
+}
+
+.analysis-error pre {
+  background-color: var(--error-pre-bg-color, #f0f0f0); 
+  padding: 12px;
+  border-radius: 4px; 
+  font-size: 0.95em; 
+  white-space: pre-wrap; 
+  word-break: break-all;
+}
+
+.dark .analysis-error pre { 
+  background-color: var(--error-pre-bg-color-dark, #222); 
+  color: #ccc; 
+}
+
 .loading-spinner { text-align: center; padding: 25px; font-size: 1.3em; color: var(--modal-text-color, #555); }
 .dark .loading-spinner { color: var(--modal-text-color-dark, #bbb); }
 
