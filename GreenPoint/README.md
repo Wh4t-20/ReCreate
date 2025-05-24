@@ -19,6 +19,7 @@ npm install
 ### Compile and Hot-Reload for Development
 
 ```sh
+node server.js
 npm run dev
 ```
 
